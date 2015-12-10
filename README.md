@@ -3,7 +3,11 @@ A library of custom iOS View Controller Animations and Interactions written in S
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/raizlabs/shifter)
 
-![alt tag](https://raw.github.com/raizlabs/shift/master/SplitTransition.gif)
+<p align="center" >
+<br/>
+<img src="https://raw.github.com/raizlabs/shift/master/SplitTransition.gif" alt="Overview" />
+<br/>
+</p>
 
 ## Installation with Carthage
 
@@ -26,5 +30,5 @@ To integrate Shift into your Xcode project using Carthage, specify it in your Ca
 
 ## Usage
 
-Make sure you import the Shift Module. `import Shift`
+Make sure you import the Shift Module: `import Shift`
 
