@@ -14,6 +14,7 @@ public enum TransitionType {
 }
 
 public class SplitTransitionController: NSObject {
+
     /**
      * The duration (in seconds) of the transition.
      */
