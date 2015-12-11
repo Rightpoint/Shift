@@ -9,9 +9,9 @@ Carthage is a decentralized dependency manager that automates the process of add
 
 You can install Carthage with Homebrew using the following commands:
 
-```
-$ brew update
-$ brew install carthage
+```sh
+brew update
+brew install carthage
 ```
 
 To integrate Shift into your Xcode project using Carthage, specify it in your Cartfile:
@@ -30,18 +30,18 @@ The rest is easy. If you are pushing a view controller to the navigation stack, 
 
 - Set your navigation controller's delegate :
 
-```
+```swift
 navigationController?.delegate = self
 ```
 - Store the transition on your view controller:
 
-```
+```swift
 var currentTransition: UIViewControllerAnimatedTransitioning?
 ``` 
 
 - Extend your view controller to implement `UINavigationControllerDelegateTransitioning`. In your implementation, make sure to set the `currentTransition`:
 
-```
+```swift
 extension ViewController: UINavigationControllerDelegate {
 
     func navigationController(navigationController: UINavigationController,
@@ -59,7 +59,6 @@ extension ViewController: UINavigationControllerDelegate {
 
         return currentTransition
     }
-
 }
 
 ```
@@ -81,7 +80,7 @@ extension ViewController: UINavigationControllerDelegate {
 
 Set these properties in your implementation of	`UINavigationControllerDelegateTransitioning`:
 
-```
+```swift
 func navigationController(navigationController: UINavigationController,
     animationControllerForOperation operation: UINavigationControllerOperation,
     fromViewController fromVC: UIViewController,
