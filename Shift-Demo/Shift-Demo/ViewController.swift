@@ -11,7 +11,7 @@ import Shift
 
 class ViewController: UITableViewController {
 
-    var currentTransition: SplitTransitionController?
+    var currentTransition: SplitTransition?
     var currentCell: UITableViewCell?
     
     let colors = [
@@ -71,7 +71,7 @@ extension ViewController: UINavigationControllerDelegate {
         toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 
         if (operation == .Push && fromVC == self) {
-            let splitTransition = SplitTransitionController()
+            let splitTransition = SplitTransition()
             splitTransition.transitionDuration = 2.0
             splitTransition.transitionType = .Push
             splitTransition.splitLocation = currentCell != nil ? CGRectGetMidY(currentCell!.frame) : CGRectGetMidY(view.frame)
