@@ -65,7 +65,10 @@ class ViewController: UITableViewController {
 
 extension ViewController: UINavigationControllerDelegate {
 
-    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func navigationController(navigationController: UINavigationController,
+        animationControllerForOperation operation: UINavigationControllerOperation,
+        fromViewController fromVC: UIViewController,
+        toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 
         if (operation == .Push && fromVC == self) {
             let splitTransition = SplitTransitionController()

@@ -3,7 +3,7 @@
 //  Shift
 //
 //  Created by Matthew Buckley on 12/10/15.
-//  Copyright 2014 Raizlabs and other contributors
+//  Copyright 2015 Raizlabs and other contributors
 //  http://raizlabs.com/
 //
 //  Permission is hereby granted, free of charge, to any person obtaining

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B5F88B501C19D96C00D10000 /* Shift.h in Headers */ = {isa = PBXBuildFile; fileRef = B5F88B4F1C19D96C00D10000 /* Shift.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B5F88B651C19DC8E00D10000 /* SplitTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B641C19DC8E00D10000 /* SplitTransitionController.swift */; };
+		B5F88B651C19DC8E00D10000 /* SplitTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B641C19DC8E00D10000 /* SplitTransition.swift */; };
 		B5F88B671C19DCAC00D10000 /* UIWindow+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B661C19DCAC00D10000 /* UIWindow+Screenshot.swift */; };
 /* End PBXBuildFile section */
 
@@ -16,7 +16,7 @@
 		B5F88B4C1C19D96C00D10000 /* Shift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F88B4F1C19D96C00D10000 /* Shift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shift.h; sourceTree = "<group>"; };
 		B5F88B511C19D96C00D10000 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B5F88B641C19DC8E00D10000 /* SplitTransitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SplitTransitionController.swift; path = Classes/SplitTransitionController.swift; sourceTree = "<group>"; };
+		B5F88B641C19DC8E00D10000 /* SplitTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SplitTransition.swift; path = Classes/SplitTransition.swift; sourceTree = "<group>"; };
 		B5F88B661C19DCAC00D10000 /* UIWindow+Screenshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+Screenshot.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,7 +61,7 @@
 		B5F88B621C19DC6900D10000 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B5F88B641C19DC8E00D10000 /* SplitTransitionController.swift */,
+				B5F88B641C19DC8E00D10000 /* SplitTransition.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -152,7 +152,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5F88B651C19DC8E00D10000 /* SplitTransitionController.swift in Sources */,
+				B5F88B651C19DC8E00D10000 /* SplitTransition.swift in Sources */,
 				B5F88B671C19DCAC00D10000 /* UIWindow+Screenshot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
