@@ -28,6 +28,7 @@
 
 import Foundation
 
+
 extension UIWindow {
 
     public class func screenShot() -> UIImage {
@@ -57,7 +58,7 @@ extension UIWindow {
                 let pi_2: CGFloat = CGFloat(M_PI_2)
                 let pi: CGFloat = CGFloat(M_PI)
 
-                switch (orientation) {
+                switch orientation {
                 case UIInterfaceOrientation.LandscapeLeft:
                     // Rotate graphics context 90 degrees clockwise
                     CGContextRotateCTM(context, pi_2)
@@ -84,7 +85,7 @@ extension UIWindow {
                 }
 
                 // draw view hierarchy or render
-                if (window.respondsToSelector(Selector("drawViewHierarchyInRect:"))) {
+                if window.respondsToSelector(Selector("drawViewHierarchyInRect:")) {
                     window.drawViewHierarchyInRect(window.bounds, afterScreenUpdates: true)
                 }
                 else {
@@ -101,8 +102,8 @@ extension UIWindow {
         // Grab rendered image
         let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        
+
         return image
     }
-    
+
 }
