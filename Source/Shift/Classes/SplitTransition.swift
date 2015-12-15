@@ -28,12 +28,19 @@
 
 import UIKit
 
-public enum TransitionType {
-    case Push
-    case Pop
-}
 
 public class SplitTransition: NSObject {
+
+    /**
+     The type of animated transition.
+
+     - Push: A push transition.
+     - Pop:  A pop transition.
+     */
+    public enum TransitionType {
+        case Push
+        case Pop
+    }
 
     /**
      * The duration (in seconds) of the transition.
@@ -93,6 +100,8 @@ public class SplitTransition: NSObject {
 
 }
 
+// MARK: - View Controller Animated Transitioning Protocol
+
 extension SplitTransition: UIViewControllerAnimatedTransitioning {
 
     public func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
@@ -115,7 +124,7 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
         // Set completion handler for transition
         let completion = {transitionContext.completeTransition(!transitionContext.transitionWasCancelled())}
 
-        switch(transitionType) {
+        switch transitionType {
         case .Push:
             push(toVC, fromViewController: fromVC, containerView: container, completion: completion)
             break
@@ -127,9 +136,9 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
 
 }
 
-private extension SplitTransition {
+// MARK: - Private
 
-    // MARK: private interface
+private extension SplitTransition {
 
     // Returns the view controller being navigated away from
     func fromViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
@@ -244,9 +253,9 @@ private extension SplitTransition {
 
         // Top screen capture extends from split location to top of view
         topSplitImageView.frame = CGRectMake(0.0, 0.0, width, splitLocation)
-        
+
         // Bottom screen capture extends from split location to bottom of view
         bottomSplitImageView.frame = CGRectMake(0.0, splitLocation, width, height - splitLocation)
     }
-    
+
 }

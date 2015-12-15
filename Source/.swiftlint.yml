@@ -1,0 +1,11 @@
+disabled_rules:
+  - line_length
+  - variable_name
+  - variable_name_max_length
+  - nesting
+  - type_body_length
+  - function_body_length
+  - statement_position
+
+included:
+  - Shift
