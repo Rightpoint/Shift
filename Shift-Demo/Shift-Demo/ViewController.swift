@@ -12,7 +12,7 @@ import Shift
 class ViewController: UITableViewController {
 
     var currentTransition: SplitTransition?
-    var currentCell: UITableViewCell?
+    var currentSplitLocation: CGFloat = 0.0
     
     let colors = [
         UIColor.redColor(),
@@ -31,6 +31,7 @@ class ViewController: UITableViewController {
         super.viewDidLoad()
 
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "com.testApp.reuseIdentifier")
+        tableView.separatorStyle = .None
     }
 
     // MARK: UITableViewDataSource
@@ -55,7 +56,7 @@ class ViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         navigationController?.delegate = self
-        currentCell = tableView.cellForRowAtIndexPath(indexPath)
+        currentSplitLocation = CGRectGetMidY(tableView.rectForRowAtIndexPath(indexPath)) - tableView.contentOffset.y
         let destinationViewController = DestinationViewController()
         destinationViewController.view.backgroundColor = colors[indexPath.row]
         navigationController?.pushViewController(destinationViewController, animated: true)
@@ -72,9 +73,11 @@ extension ViewController: UINavigationControllerDelegate {
 
         if (operation == .Push && fromVC == self) {
             let splitTransition = SplitTransition()
-            splitTransition.transitionDuration = 2.0
-            splitTransition.transitionType = .Push
-            splitTransition.splitLocation = currentCell != nil ? CGRectGetMidY(currentCell!.frame) : CGRectGetMidY(view.frame)
+            splitTransition.interactive = true
+            splitTransition.transitionType = .Interactive
+            splitTransition.sourceViewController = self
+            splitTransition.transitionDuration = 1.0
+            splitTransition.splitLocation = currentSplitLocation
             currentTransition = splitTransition
         }
         else if (operation == .Pop && toVC == self) {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5E041451C21C7A2003B4203 /* Shift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F88B961C19E6F500D10000 /* Shift.framework */; };
+		B5E041461C21C7A2003B4203 /* Shift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5F88B961C19E6F500D10000 /* Shift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5F88B751C19E06600D10000 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B741C19E06600D10000 /* AppDelegate.swift */; };
 		B5F88B771C19E06600D10000 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B761C19E06600D10000 /* ViewController.swift */; };
 		B5F88B7C1C19E06600D10000 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5F88B7B1C19E06600D10000 /* Assets.xcassets */; };
@@ -15,6 +17,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B5E041401C21C693003B4203 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B5F88B911C19E6F500D10000 /* Shift.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B5F88B4B1C19D96C00D10000;
+			remoteInfo = Shift;
+		};
+		B5E041471C21C7A2003B4203 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B5F88B911C19E6F500D10000 /* Shift.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B5F88B4B1C19D96C00D10000;
+			remoteInfo = Shift;
+		};
 		B5F88B951C19E6F500D10000 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B5F88B911C19E6F500D10000 /* Shift.xcodeproj */;
@@ -22,14 +38,21 @@
 			remoteGlobalIDString = B5F88B4C1C19D96C00D10000;
 			remoteInfo = Shift;
 		};
-		B5F88B971C19E79000D10000 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B5F88B911C19E6F500D10000 /* Shift.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = B5F88B4B1C19D96C00D10000;
-			remoteInfo = Shift;
-		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B5E041491C21C7A2003B4203 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B5E041461C21C7A2003B4203 /* Shift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		B5F88B711C19E06600D10000 /* Shift-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shift-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5E041451C21C7A2003B4203 /* Shift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,11 +125,13 @@
 				B5F88B6D1C19E06600D10000 /* Sources */,
 				B5F88B6E1C19E06600D10000 /* Frameworks */,
 				B5F88B6F1C19E06600D10000 /* Resources */,
+				B5E041491C21C7A2003B4203 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				B5F88B981C19E79000D10000 /* PBXTargetDependency */,
+				B5E041411C21C693003B4203 /* PBXTargetDependency */,
+				B5E041481C21C7A2003B4203 /* PBXTargetDependency */,
 			);
 			name = "Shift-Demo";
 			productName = "Shift-Demo";
@@ -187,10 +213,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		B5F88B981C19E79000D10000 /* PBXTargetDependency */ = {
+		B5E041411C21C693003B4203 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Shift;
-			targetProxy = B5F88B971C19E79000D10000 /* PBXContainerItemProxy */;
+			targetProxy = B5E041401C21C693003B4203 /* PBXContainerItemProxy */;
+		};
+		B5E041481C21C7A2003B4203 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Shift;
+			targetProxy = B5E041471C21C7A2003B4203 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -291,6 +322,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "Shift-Demo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.raizlabs.Shift-Demo";
@@ -302,6 +334,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "Shift-Demo/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.raizlabs.Shift-Demo";

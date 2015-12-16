@@ -13,10 +13,12 @@ class DestinationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 7), dispatch_get_main_queue()) { () -> Void in
-            self.navigationController?.popViewControllerAnimated(true)
-        }
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("didTap:"))
+        view.addGestureRecognizer(tapGestureRecognizer)
+    }
 
+    func didTap(sender: UITapGestureRecognizer) {
+        navigationController?.popViewControllerAnimated(true)
     }
     
 }
