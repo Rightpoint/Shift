@@ -190,9 +190,7 @@ private extension SplitTransition {
 
                     // If a completion was passed as a parameter,
                     // execute it
-                    if let completion = completion {
-                        completion()
-                    }
+                    completion?()
             }
     }
 
@@ -237,11 +235,8 @@ private extension SplitTransition {
                     // Make destination view controller's view visible again
                     toViewController.view.alpha = 1.0
 
-                    // If a completion was passed as a parameter,
-                    // execute it
-                    if let completion = completion {
-                        completion()
-                    }
+                    // If a completion was passed as a parameter, execute it
+                    completion?()
             }
     }
 
