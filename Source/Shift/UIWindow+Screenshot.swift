@@ -97,21 +97,18 @@ extension UIWindow {
 
                 // Move graphics context up
                 CGContextTranslateCTM(context, 0, -imageSize.width)
-                break
             case UIInterfaceOrientation.LandscapeRight:
                 // Rotate graphics context 90 degrees counter-clockwise
                 CGContextRotateCTM(context, -pi_2)
 
                 // Move graphics context left
                 CGContextTranslateCTM(context, -imageSize.height, 0)
-                break
             case UIInterfaceOrientation.PortraitUpsideDown:
                 // Rotate graphics context 180 degrees
                 CGContextRotateCTM(context, pi)
 
                 // Move graphics context left and up
                 CGContextTranslateCTM(context, -imageSize.width, -imageSize.height)
-                break
             default:
                 break
             }
