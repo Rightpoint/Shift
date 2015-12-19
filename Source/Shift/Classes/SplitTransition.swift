@@ -293,7 +293,7 @@ private extension SplitTransition {
         }
 
         // Update transition progress
-        transitionProgress += ((currentTouchLocation.y - splitLocation) / splitLocation)
+        transitionProgress += (abs(currentTouchLocation.y - splitLocation) / splitLocation)
 
         // Update interactive transition
         let percentComplete = max((transitionProgress / interactiveTransitionScrollDistance), 0.0)
