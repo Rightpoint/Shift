@@ -35,6 +35,12 @@ public enum TransitionType {
     case Interactive
 }
 
+enum TransitionState {
+    case Initial
+    case Finished
+    case Cancelled
+}
+
 public class SplitTransition: UIPercentDrivenInteractiveTransition {
     /**
      * The duration (in seconds) of the transition.
@@ -69,16 +75,54 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
         return imageView
     }()
 
-    public var sourceViewController: UIViewController?
-    public var interactive: Bool = true
-    private var canScrollToZero: Bool = false
+    /**
+     * In an interactive transition, splitOffset
+     * determines the vertical distance of the initial
+     * split when the cell is first tapped
+     */
+    public var splitOffset: CGFloat = 0.0
+
+    /*
+    *
+    **/
+    var interactiveTransitionScrollDistance: CGFloat = 0.0
+
+    var transitionState: TransitionState = .Initial {
+        didSet {
+            switch (transitionState) {
+                case .Initial:
+                    break
+                case .Finished:
+                    break
+                case .Cancelled:
+                    previousTouchLocation = nil
+                    break
+            }
+        }
+    }
+
+    /***/
     private var transitionProgress: CGFloat = 0.0
+
+    /***/
     private var gestureRecognizer: UIPanGestureRecognizer?
+
+    /***/
     private var transitionContext: UIViewControllerContextTransitioning?
-    private var previousTouchLocation: CGPoint = CGPointZero
+
+    /***/
+    private var previousTouchLocation: CGPoint?
+
+    /***/
     private var container: UIView?
+
+    /***/
     private var toVC: UIViewController?
+
+    /***/
     private var fromVC: UIViewController?
+
+    /***/
     private var completion: (() -> ())?
 
     /**
@@ -107,72 +151,40 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     func didPan(gesture: UIPanGestureRecognizer) {
 
         switch (gesture.state) {
-        case .Began:
-            let presentationLayer = container?.layer.presentationLayer()
-            container?.layer.position = presentationLayer?.position ?? CGPointZero
-            container?.layer.removeAllAnimations()
-            previousTouchLocation = gesture.locationInView(container)
-            break
-        case .Changed:
-            let currentTouchLocation = gesture.locationInView(container)
-            let distanceMoved = currentTouchLocation.y - previousTouchLocation.y
+            case .Began:
+                break
+            case .Changed:
+                panGestureDidChange(gesture: gesture)
+                switch (transitionState) {
+                    case .Finished:
+                        // split views are removed from the view hierarchy
+                        topSplitImageView.removeFromSuperview()
+                        bottomSplitImageView.removeFromSuperview()
 
-            transitionProgress += distanceMoved
-            let totalDistance = max(topSplitImageView.bounds.size.height, bottomSplitImageView.bounds.size.height)
+                        completion?()
 
-            let floor = canScrollToZero ? 0.0 : 50.0 / totalDistance
+                        // Make destination view controller's view visible
+                        toVC?.view.alpha = 1.0
+                        fromVC?.view.alpha = 0.0
+                    case .Cancelled:
+                        // split views are removed from the view hierarchy
+                        topSplitImageView.removeFromSuperview()
+                        bottomSplitImageView.removeFromSuperview()
 
-            // Update interactive transition
-            let percentComplete = max((transitionProgress / totalDistance), floor)
+                        // Cancel transition
+                        cancelInteractiveTransition()
 
-            print("\(previousTouchLocation.y > currentTouchLocation.y)")
-            if (previousTouchLocation.y > currentTouchLocation.y) && percentComplete == floor {
-                canScrollToZero = true
+                        completion?()
+
+                        // Make source view controller's view visible again
+                        toVC?.view.alpha = 0.0
+                        fromVC?.view.alpha = 1.0
+                    default:
+                        break
+                    }
+            default:
+                break
             }
-
-            print("\(percentComplete)")
-            previousTouchLocation = currentTouchLocation
-
-            transitionProgress += ((currentTouchLocation.y - splitLocation) / splitLocation)
-            topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, -(percentComplete * (topSplitImageView.bounds.size.height - 50.0)))
-            bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, (percentComplete * (bottomSplitImageView.bounds.size.height - 50.0)))
-
-            transitionContext?.updateInteractiveTransition(percentComplete)
-
-            if (percentComplete >= 1.0) {
-                // When the transition is finished, top and bottom
-                // split views are removed from the view hierarchy
-                topSplitImageView.removeFromSuperview()
-                bottomSplitImageView.removeFromSuperview()
-                if let completion = completion {
-                    completion()
-                }
-
-                // Make destination view controller's view visible again
-                toVC?.view.alpha = 1.0
-                fromVC?.view.alpha = 0.0
-            }
-            else if (percentComplete == 0.0) {
-                topSplitImageView.removeFromSuperview()
-                bottomSplitImageView.removeFromSuperview()
-                if let completion = completion {
-                    cancelInteractiveTransition()
-                    completion()
-                }
-
-                // Make destination view controller's view visible again
-                toVC?.view.alpha = 0.0
-                if let destinationView = fromVC?.view,
-                    originView = toVC?.view {
-                        container?.insertSubview(destinationView, aboveSubview: originView)
-                        destinationView.alpha = 1.0
-                }
-                canScrollToZero = false
-            }
-            break
-        default:
-            break
-        }
     }
 
     public override func startInteractiveTransition(transitionContext: UIViewControllerContextTransitioning) {
@@ -202,20 +214,20 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
         gestureRecognizer = UIPanGestureRecognizer(target: self, action: Selector("didPan:"))
         if let gestureRecognizer = gestureRecognizer {
             gestureRecognizer.delegate = self
-            sourceViewController?.view.window?.addGestureRecognizer(gestureRecognizer)
+            fromVC.view.window?.addGestureRecognizer(gestureRecognizer)
         }
 
         switch(transitionType) {
-        case .Push:
-            push(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
-            break
-        case .Pop:
-            pop(toVC, fromViewController: fromVC, containerView: container, completion: completion)
-            break
-        case .Interactive:
-            push(50.0, toViewController: toVC, fromViewController: fromVC, containerView: container, completion: nil)
-            break
-        }
+            case .Push:
+                push(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
+                break
+            case .Pop:
+                pop(toVC, fromViewController: fromVC, containerView: container, completion: completion)
+                break
+            case .Interactive:
+                push(splitOffset, toViewController: toVC, fromViewController: fromVC, containerView: container, completion: nil)
+                break
+            }
     }
 
 }
@@ -223,6 +235,77 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
 private extension SplitTransition {
 
     // MARK: private interface
+
+    func animatePush(toOffset toOffset: CGFloat,
+                        animations: (() -> ())?,
+                        completion: (() -> ())?) -> Void {
+
+        // Set animation options
+        let options: UIViewAnimationOptions = transitionType == .Interactive ? .AllowUserInteraction : .LayoutSubviews
+
+        UIView.animateWithDuration(transitionDuration, delay: 0.0, usingSpringWithDamping: 0.65, initialSpringVelocity: 1.0, options: options, animations: { () -> Void in
+                animations?()
+            }) { [weak self] (Bool) -> Void in
+                // When the transition is finished, top and bottom
+                // split views are removed from the view hierarchy
+                if let controller = self {
+                    if (!(controller.transitionType == .Interactive)) {
+                        controller.topSplitImageView.removeFromSuperview()
+                        controller.bottomSplitImageView.removeFromSuperview()
+                    }
+                    // If a completion was passed as a parameter,
+                    // execute it
+                    completion?()
+                }
+
+        }
+    }
+
+    func panGestureDidChange(gesture gesture: UIPanGestureRecognizer) -> Void {
+        // Continue tracking touch location
+        let currentTouchLocation = gesture.locationInView(container)
+
+        // Calculate distance between current touch location and previous
+        // touch location
+        var distanceMoved: CGFloat = 0.0
+
+        if let previousTouchLocation = previousTouchLocation {
+            distanceMoved = currentTouchLocation.y - previousTouchLocation.y
+        }
+        else {
+            distanceMoved = splitOffset
+        }
+
+        // Update 'previousTouchLocation'
+        previousTouchLocation = currentTouchLocation
+
+        // Increment 'transitionProgress' by calculated distance
+        transitionProgress += distanceMoved
+
+        // Update interactive transition
+        let percentComplete = max((transitionProgress / interactiveTransitionScrollDistance), 0.0)
+
+        // Calculate how much of the bottom and top screenshots have been scrolled off-screen
+        let bottomPercentComplete = max(transitionProgress / bottomSplitImageView.bounds.size.height, 0.0)
+        let topPercentComplete = max(transitionProgress / topSplitImageView.bounds.size.height, 0.0)
+
+        // Update transition progress
+        transitionProgress += ((currentTouchLocation.y - splitLocation) / splitLocation)
+
+        // Set new transforms for top and bottom imageViews
+        topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, -(topPercentComplete * (topSplitImageView.bounds.size.height)))
+        bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, (bottomPercentComplete * (bottomSplitImageView.bounds.size.height)))
+
+        // Update transition
+        transitionContext?.updateInteractiveTransition(percentComplete)
+
+        if percentComplete >= 1.0 {
+            transitionState = .Finished
+        }
+        else if percentComplete == 0.0 {
+            transitionState = .Cancelled
+        }
+    }
 
     // Returns the view controller being navigated away from
     func fromViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
@@ -266,11 +349,11 @@ private extension SplitTransition {
     }
 
     // Push Transition
-    func push(toOffset: CGFloat = 0.0, toViewController: UIViewController,
+    func push(toOffset: CGFloat = 0.0,
+        toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
         completion: (() -> ())?) {
-
             // Add subviews
             containerView.addSubview(toViewController.view)
             containerView.addSubview(topSplitImageView)
@@ -284,33 +367,19 @@ private extension SplitTransition {
             toViewController.view.alpha = 1.0
             toViewController.view.transform = CGAffineTransformMakeTranslation(0.0, topSplitImageView.frame.size.height)
 
-            // Set animation options
-            let options: UIViewAnimationOptions = interactive ? .AllowUserInteraction : .LayoutSubviews
-
             // Animate all the way or only partially if a toOffset parameter is passed in
             let targetOffsetTop = toOffset != 0.0 ? -toOffset : -topSplitImageView.bounds.size.height
             let targetOffsetBottom = toOffset != 0.0 ? toOffset : bottomSplitImageView.bounds.size.height
 
-            UIView.animateWithDuration(transitionDuration, delay: 0.0, usingSpringWithDamping: 0.65, initialSpringVelocity: 1.0, options: options, animations: { [weak self] () -> Void in
-                if let controller = self {
-                    controller.topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, targetOffsetTop)
-                    controller.bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, targetOffsetBottom)
-                    toViewController.view.transform = CGAffineTransformIdentity
-                }
-                }) { [weak self] (Bool) -> Void in
-                    // When the transition is finished, top and bottom
-                    // split views are removed from the view hierarchy
-                    if let controller = self {
-                        if (!controller.interactive) {
-                            controller.topSplitImageView.removeFromSuperview()
-                            controller.bottomSplitImageView.removeFromSuperview()
-                        }
-                        // If a completion was passed as a parameter,
-                        // execute it
-                        completion?()
-                    }
-
+            let animations = { [weak self] in
+                self?.topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, targetOffsetTop)
+                self?.bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, targetOffsetBottom)
+                toViewController.view.transform = CGAffineTransformIdentity
             }
+
+            animatePush(toOffset: toOffset,
+                animations: animations,
+                completion: completion)
     }
 
     // Pop Transition
@@ -370,6 +439,10 @@ private extension SplitTransition {
 
         // Bottom screen capture extends from split location to bottom of view
         bottomSplitImageView.frame = CGRectMake(0.0, splitLocation, width, height - splitLocation)
+
+        // Store a distance figure to use to calculate percent complete for
+        // the interactive transition
+        interactiveTransitionScrollDistance = max(topSplitImageView.bounds.size.height, bottomSplitImageView.bounds.size.height)
     }
 
 }
@@ -377,6 +450,7 @@ private extension SplitTransition {
 extension SplitTransition: UIGestureRecognizerDelegate {
 
     public func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+
         let location = gestureRecognizer.locationInView(container)
         let presentationLayer = container?.layer.presentationLayer()
 
@@ -385,17 +459,17 @@ extension SplitTransition: UIGestureRecognizerDelegate {
         }
         return false
     }
-    
+
 }
 
 extension SplitTransition: UIViewControllerTransitioningDelegate {
-    
+
     public func interactionControllerForPresentation(animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return interactive ? self : nil
+        return transitionType == .Interactive ? self : nil
     }
-    
+
     public func interactionControllerForDismissal(animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return interactive ? self : nil
+        return transitionType == .Interactive ? self : nil
     }
-    
+
 }

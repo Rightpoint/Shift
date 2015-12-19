@@ -73,10 +73,9 @@ extension ViewController: UINavigationControllerDelegate {
 
         if (operation == .Push && fromVC == self) {
             let splitTransition = SplitTransition()
-            splitTransition.interactive = true
             splitTransition.transitionType = .Interactive
-            splitTransition.sourceViewController = self
             splitTransition.transitionDuration = 1.0
+            splitTransition.splitOffset = 50.0
             splitTransition.splitLocation = currentSplitLocation
             currentTransition = splitTransition
         }
