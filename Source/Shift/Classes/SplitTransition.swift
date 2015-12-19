@@ -105,6 +105,9 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     private var transitionProgress: CGFloat = 0.0
 
     /***/
+    private var initialPan: Bool = true
+
+    /***/
     private var gestureRecognizer: UIPanGestureRecognizer?
 
     /***/
@@ -182,6 +185,9 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
                     default:
                         break
                     }
+                    case .Ended:
+                        initialPan = false
+                        previousTouchLocation = nil
             default:
                 break
             }
@@ -273,7 +279,7 @@ private extension SplitTransition {
             distanceMoved = currentTouchLocation.y - previousTouchLocation.y
         }
         else {
-            distanceMoved = splitOffset
+            distanceMoved = initialPan ? splitOffset : 0.0
         }
 
         // Update 'previousTouchLocation'
