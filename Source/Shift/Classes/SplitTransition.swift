@@ -102,7 +102,17 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     }
 
     /***/
-    private var transitionProgress: CGFloat = 0.0
+    private var transitionProgress: CGFloat = 0.0 {
+        didSet {
+            // Calculate how much of the bottom and top screenshots have been scrolled off-screen
+            let bottomPercentComplete = max(transitionProgress / bottomSplitImageView.bounds.size.height, 0.0)
+            let topPercentComplete = max(transitionProgress / topSplitImageView.bounds.size.height, 0.0)
+
+            // Set new transforms for top and bottom imageViews
+            topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, -(topPercentComplete * (topSplitImageView.bounds.size.height)))
+            bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, (bottomPercentComplete * (bottomSplitImageView.bounds.size.height)))
+        }
+    }
 
     /***/
     private var initialPan: Bool = true
@@ -282,25 +292,17 @@ private extension SplitTransition {
             distanceMoved = initialPan ? splitOffset : 0.0
         }
 
+        // Update transition progress
+        transitionProgress += ((currentTouchLocation.y - splitLocation) / splitLocation)
+
+        // Update interactive transition
+        let percentComplete = max((transitionProgress / interactiveTransitionScrollDistance), 0.0)
+
         // Update 'previousTouchLocation'
         previousTouchLocation = currentTouchLocation
 
         // Increment 'transitionProgress' by calculated distance
         transitionProgress += distanceMoved
-
-        // Update interactive transition
-        let percentComplete = max((transitionProgress / interactiveTransitionScrollDistance), 0.0)
-
-        // Calculate how much of the bottom and top screenshots have been scrolled off-screen
-        let bottomPercentComplete = max(transitionProgress / bottomSplitImageView.bounds.size.height, 0.0)
-        let topPercentComplete = max(transitionProgress / topSplitImageView.bounds.size.height, 0.0)
-
-        // Update transition progress
-        transitionProgress += ((currentTouchLocation.y - splitLocation) / splitLocation)
-
-        // Set new transforms for top and bottom imageViews
-        topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, -(topPercentComplete * (topSplitImageView.bounds.size.height)))
-        bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, (bottomPercentComplete * (bottomSplitImageView.bounds.size.height)))
 
         // Update transition
         transitionContext?.updateInteractiveTransition(percentComplete)
