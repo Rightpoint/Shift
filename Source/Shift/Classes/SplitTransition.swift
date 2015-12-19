@@ -29,19 +29,20 @@
 import UIKit
 
 
-public enum TransitionType {
-    case Push
-    case Pop
-    case Interactive
-}
-
-enum TransitionState {
-    case Initial
-    case Finished
-    case Cancelled
-}
-
 public class SplitTransition: UIPercentDrivenInteractiveTransition {
+
+    public enum TransitionType {
+        case Push
+        case Pop
+        case Interactive
+    }
+
+    enum TransitionState {
+        case Initial
+        case Finished
+        case Cancelled
+    }
+
     /**
      * The duration (in seconds) of the transition.
      */
@@ -53,7 +54,7 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     public var transitionDelay: NSTimeInterval = 0.0
 
     /**
-     * Stores animation type (e.g. push/pop). Defaults to "push".
+     * Animation type (e.g. push/pop). Defaults to "push".
      */
     public var transitionType: TransitionType = .Push
 
@@ -76,17 +77,32 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     }()
 
     /**
+     * Screen capture extending from split location
+     * to bottom of screen
+     */
+    lazy var bottomSplitImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = self.screenCapture
+        imageView.contentMode = .Bottom
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    /**
      * In an interactive transition, splitOffset
      * determines the vertical distance of the initial
      * split when the cell is first tapped
      */
     public var splitOffset: CGFloat = 0.0
 
-    /*
-    *
-    **/
+    /**
+    * Scroll distance in UI points
+    */
     var interactiveTransitionScrollDistance: CGFloat = 0.0
 
+    /**
+    * State of interactive transition
+    */
     var transitionState: TransitionState = .Initial {
         didSet {
             switch (transitionState) {
@@ -96,12 +112,13 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
                     break
                 case .Cancelled:
                     previousTouchLocation = nil
-                    break
             }
         }
     }
 
-    /***/
+    /**
+    * Transition progress in UIPoints (essentially, distance scrolled from splitLocation)
+    */
     private var transitionProgress: CGFloat = 0.0 {
         didSet {
             // Calculate how much of the bottom and top screenshots have been scrolled off-screen
@@ -114,41 +131,47 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
         }
     }
 
-    /***/
+    /**
+    * For interactive transition, reflects whether
+    * the current pan is the first one (necessary to correctly
+    * manage transition progress vis a vis initial offset)
+    */
     private var initialPan: Bool = true
 
-    /***/
+    /**
+    * Stores a gesture recognizer (interactive transition only)
+    */
     private var gestureRecognizer: UIPanGestureRecognizer?
 
-    /***/
+    /**
+    * Current transition context
+    */
     private var transitionContext: UIViewControllerContextTransitioning?
 
-    /***/
+    /**
+    * Stores the location of the most recent touch (interactive transition only)
+    */
     private var previousTouchLocation: CGPoint?
 
-    /***/
+    /**
+    * Transition container view
+    */
     private var container: UIView?
 
-    /***/
+    /**
+    * Destination view controller for current transition
+    */
     private var toVC: UIViewController?
 
-    /***/
+    /**
+    * Origin view controller for current transition
+    */
     private var fromVC: UIViewController?
 
-    /***/
-    private var completion: (() -> ())?
-
     /**
-     * Screen capture extending from split location
-     * to bottom of screen
-     */
-    lazy var bottomSplitImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = self.screenCapture
-        imageView.contentMode = .Bottom
-        imageView.clipsToBounds = true
-        return imageView
-    }()
+    * Completion for the current transition
+    */
+    private var completion: (() -> ())?
 
     /**
      *  Optional capture of entire screen
@@ -162,7 +185,6 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     }
 
     func didPan(gesture: UIPanGestureRecognizer) {
-
         switch (gesture.state) {
             case .Began:
                 break
