@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             w.backgroundColor = UIColor.purpleColor()
             let rootViewController = ViewController()
             let navViewController = UINavigationController(rootViewController: rootViewController)
-            navViewController.setNavigationBarHidden(true, animated: false)
             w.rootViewController = navViewController
             w.makeKeyAndVisible()
         }

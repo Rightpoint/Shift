@@ -28,7 +28,6 @@
 
 import UIKit
 
-
 public class SplitTransition: UIPercentDrivenInteractiveTransition {
 
     public enum TransitionType {
@@ -111,6 +110,8 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
                 case .Finished:
                     break
                 case .Cancelled:
+                    fromVC?.navigationController?.navigationBarHidden = false
+                    fromVC?.navigationController?.delegate = initialNavigationControllerDelegate
                     previousTouchLocation = nil
             }
         }
@@ -178,10 +179,19 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
      */
     var screenCapture: UIImage?
 
-    convenience init(transitionDuration: NSTimeInterval, transitionType: TransitionType) {
+    /**
+     * Store the previous UINavigationControllerDelegate of the
+     * origin view controller
+     */
+    var initialNavigationControllerDelegate: UINavigationControllerDelegate?
+
+    public convenience init(transitionDuration: NSTimeInterval,
+                        transitionType: TransitionType,
+                        initialNavigationControllerDelegate: UINavigationControllerDelegate?) {
         self.init()
         self.transitionDuration = transitionDuration
         self.transitionType = transitionType
+        self.initialNavigationControllerDelegate = initialNavigationControllerDelegate
     }
 
     func didPan(gesture: UIPanGestureRecognizer) {
@@ -363,6 +373,7 @@ private extension SplitTransition {
         // Set source and destination view controllers
         fromVC = fromViewController(transitionContext) ?? UIViewController()
         toVC = toViewController(transitionContext) ?? UIViewController()
+        toVC?.navigationController?.navigationBarHidden = true
 
         // Set completion handler for transition
         completion = {
@@ -433,7 +444,6 @@ private extension SplitTransition {
 
             UIView.animateWithDuration(transitionDuration, delay: 0.0, usingSpringWithDamping: 0.65, initialSpringVelocity: 1.0, options: .LayoutSubviews, animations: { [weak self] () -> Void in
                 if let controller = self {
-
                     // Restore the top and bottom screen
                     // captures to their original positions
                     controller.topSplitImageView.transform = CGAffineTransformIdentity
@@ -452,6 +462,8 @@ private extension SplitTransition {
 
                     // Make destination view controller's view visible again
                     toViewController.view.alpha = 1.0
+                    toViewController.navigationController?.navigationBarHidden = false
+                    toViewController.navigationController?.delegate = self?.initialNavigationControllerDelegate
 
                     // If a completion was passed as a parameter, execute it
                     completion?()

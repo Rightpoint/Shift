@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5B614D71C263FDF002961BC /* SplitTransitionInteractiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B614D61C263FDF002961BC /* SplitTransitionInteractiveViewController.swift */; };
+		B5B614D91C263FF9002961BC /* SplitTransitionAnimatedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B614D81C263FF9002961BC /* SplitTransitionAnimatedViewController.swift */; };
 		B5E041451C21C7A2003B4203 /* Shift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F88B961C19E6F500D10000 /* Shift.framework */; };
 		B5E041461C21C7A2003B4203 /* Shift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5F88B961C19E6F500D10000 /* Shift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5F88B751C19E06600D10000 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B741C19E06600D10000 /* AppDelegate.swift */; };
@@ -55,6 +57,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B5B614D61C263FDF002961BC /* SplitTransitionInteractiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitTransitionInteractiveViewController.swift; sourceTree = "<group>"; };
+		B5B614D81C263FF9002961BC /* SplitTransitionAnimatedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitTransitionAnimatedViewController.swift; sourceTree = "<group>"; };
 		B5F88B711C19E06600D10000 /* Shift-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shift-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F88B741C19E06600D10000 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B5F88B761C19E06600D10000 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -100,6 +104,8 @@
 				B5F88B741C19E06600D10000 /* AppDelegate.swift */,
 				B5F88B761C19E06600D10000 /* ViewController.swift */,
 				B5F88B991C19F07F00D10000 /* DestinationViewController.swift */,
+				B5B614D61C263FDF002961BC /* SplitTransitionInteractiveViewController.swift */,
+				B5B614D81C263FF9002961BC /* SplitTransitionAnimatedViewController.swift */,
 				B5F88B7B1C19E06600D10000 /* Assets.xcassets */,
 				B5F88B7D1C19E06600D10000 /* LaunchScreen.storyboard */,
 				B5F88B801C19E06600D10000 /* Info.plist */,
@@ -205,7 +211,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5F88B771C19E06600D10000 /* ViewController.swift in Sources */,
+				B5B614D71C263FDF002961BC /* SplitTransitionInteractiveViewController.swift in Sources */,
 				B5F88B9A1C19F07F00D10000 /* DestinationViewController.swift in Sources */,
+				B5B614D91C263FF9002961BC /* SplitTransitionAnimatedViewController.swift in Sources */,
 				B5F88B751C19E06600D10000 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -13,18 +13,15 @@ class ViewController: UITableViewController {
 
     var currentTransition: SplitTransition?
     var currentSplitLocation: CGFloat = 0.0
-    
-    let colors = [
-        UIColor.redColor(),
-        UIColor.purpleColor(),
-        UIColor.blueColor(),
-        UIColor.greenColor(),
-        UIColor.yellowColor(),
-        UIColor.orangeColor(),
-        UIColor.redColor(),
-        UIColor.purpleColor(),
-        UIColor.blueColor(),
-        UIColor.greenColor(),
+
+    let titles = [
+        "Split Transition (Animated)",
+        "Split Transition (Interactive)"
+    ]
+
+    let exampleViewControllers = [
+        SplitTransitionAnimatedViewController(),
+        SplitTransitionInteractiveViewController()
     ]
 
     override func viewDidLoad() {
@@ -39,52 +36,26 @@ class ViewController: UITableViewController {
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
+
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return titles.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("com.testApp.reuseIdentifier", forIndexPath: indexPath)
-        cell.selectionStyle = .None
-        cell.backgroundColor = colors[indexPath.row]
+        cell.textLabel?.text = titles[indexPath.row]
+        cell.accessoryType = .DisclosureIndicator
         return cell
     }
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 100.0
+        return 50.0
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        navigationController?.delegate = self
         currentSplitLocation = CGRectGetMidY(tableView.rectForRowAtIndexPath(indexPath)) - tableView.contentOffset.y
-        let destinationViewController = DestinationViewController()
-        destinationViewController.view.backgroundColor = colors[indexPath.row]
+        let destinationViewController = exampleViewControllers[indexPath.row]
         navigationController?.pushViewController(destinationViewController, animated: true)
     }
 
 }
-
-extension ViewController: UINavigationControllerDelegate {
-
-    func navigationController(navigationController: UINavigationController,
-        animationControllerForOperation operation: UINavigationControllerOperation,
-        fromViewController fromVC: UIViewController,
-        toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-
-        if (operation == .Push && fromVC == self) {
-            let splitTransition = SplitTransition()
-            splitTransition.transitionType = .Interactive
-            splitTransition.transitionDuration = 1.0
-            splitTransition.splitOffset = 50.0
-            splitTransition.splitLocation = currentSplitLocation
-            currentTransition = splitTransition
-        }
-        else if (operation == .Pop && toVC == self) {
-            currentTransition?.transitionType = .Pop
-        }
-
-        return currentTransition
-    }
-
-}
-
