@@ -30,12 +30,26 @@ import UIKit
 
 public class SplitTransition: UIPercentDrivenInteractiveTransition {
 
+    /**
+     The type of transition.
+
+     - Push: A push transition.
+     - Pop:  A pop transition.
+     - Interactive:  An interactive transition.
+    */
     public enum TransitionType {
         case Push
         case Pop
         case Interactive
     }
 
+    /**
+     The progress state of the transition.
+
+     - Initial: transition has not begun.
+     - Finished:  transition is complete.
+     - Cancelled:  transition has been cancelled.
+    */
     enum TransitionState {
         case Initial
         case Finished
@@ -200,36 +214,10 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
                 break
             case .Changed:
                 panGestureDidChange(gesture: gesture)
-                switch (transitionState) {
-                    case .Finished:
-                        // split views are removed from the view hierarchy
-                        topSplitImageView.removeFromSuperview()
-                        bottomSplitImageView.removeFromSuperview()
-
-                        completion?()
-
-                        // Make destination view controller's view visible
-                        toVC?.view.alpha = 1.0
-                        fromVC?.view.alpha = 0.0
-                    case .Cancelled:
-                        // split views are removed from the view hierarchy
-                        topSplitImageView.removeFromSuperview()
-                        bottomSplitImageView.removeFromSuperview()
-
-                        // Cancel transition
-                        cancelInteractiveTransition()
-
-                        completion?()
-
-                        // Make source view controller's view visible again
-                        toVC?.view.alpha = 0.0
-                        fromVC?.view.alpha = 1.0
-                    default:
-                        break
-                    }
-                    case .Ended:
-                        initialPan = false
-                        previousTouchLocation = nil
+                updateTransitionState()
+            case .Ended:
+                initialPan = false
+                previousTouchLocation = nil
             default:
                 break
             }
@@ -347,6 +335,36 @@ private extension SplitTransition {
         }
     }
 
+    func updateTransitionState() -> Void {
+        switch (transitionState) {
+            case .Finished:
+                // split views are removed from the view hierarchy
+                topSplitImageView.removeFromSuperview()
+                bottomSplitImageView.removeFromSuperview()
+
+                completion?()
+
+                // Make destination view controller's view visible
+                toVC?.view.alpha = 1.0
+                fromVC?.view.alpha = 0.0
+            case .Cancelled:
+                // split views are removed from the view hierarchy
+                topSplitImageView.removeFromSuperview()
+                bottomSplitImageView.removeFromSuperview()
+
+                // Cancel transition
+                cancelInteractiveTransition()
+
+                completion?()
+
+                // Make source view controller's view visible again
+                toVC?.view.alpha = 0.0
+                fromVC?.view.alpha = 1.0
+            default:
+                break
+        }
+    }
+
     // Returns the view controller being navigated away from
     func fromViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
         return transitionContext?.viewControllerForKey(UITransitionContextFromViewControllerKey)
@@ -444,8 +462,7 @@ private extension SplitTransition {
 
             UIView.animateWithDuration(transitionDuration, delay: 0.0, usingSpringWithDamping: 0.65, initialSpringVelocity: 1.0, options: .LayoutSubviews, animations: { [weak self] () -> Void in
                 if let controller = self {
-                    // Restore the top and bottom screen
-                    // captures to their original positions
+                    // Restore the top and bottom screen captures to their original positions
                     controller.topSplitImageView.transform = CGAffineTransformIdentity
                     controller.bottomSplitImageView.transform = CGAffineTransformIdentity
 
@@ -453,8 +470,7 @@ private extension SplitTransition {
                     fromViewController.view.transform = CGAffineTransformMakeTranslation(0.0, controller.topSplitImageView.bounds.size.height)
                 }
                 }) { [weak self] (Bool) -> Void in
-                    // When the transition is finished, top and bottom
-                    // split views are removed from the view hierarchy
+                    // When the transition is finished, top and bottom split views are removed from the view hierarchy
                     if let controller = self {
                         controller.topSplitImageView.removeFromSuperview()
                         controller.bottomSplitImageView.removeFromSuperview()
