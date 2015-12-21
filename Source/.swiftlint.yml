@@ -5,6 +5,7 @@ disabled_rules:
   - type_body_length
   - function_body_length
   - statement_position
+  - file_length
 
 included:
   - Shift
