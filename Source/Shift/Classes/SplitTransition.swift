@@ -215,7 +215,7 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
                 return
         }
 
-        gestureRecognizer = UIPanGestureRecognizer(target: self, action: Selector("didPan:"))
+        gestureRecognizer = UIPanGestureRecognizer(target: self, action: "didPan:")
         if let gestureRecognizer = gestureRecognizer {
             gestureRecognizer.delegate = self
             fromVC.view.window?.addGestureRecognizer(gestureRecognizer)
