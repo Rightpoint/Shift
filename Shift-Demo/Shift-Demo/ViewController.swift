@@ -9,7 +9,7 @@
 import UIKit
 import Shift
 
-class ViewController: UITableViewController {
+final class ViewController: UITableViewController {
 
     var currentTransition: SplitTransition?
     var currentSplitLocation: CGFloat = 0.0
@@ -29,6 +29,7 @@ class ViewController: UITableViewController {
 
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "com.testApp.reuseIdentifier")
         tableView.separatorStyle = .None
+        tableView.rowHeight = 50.0
     }
 
     // MARK: UITableViewDataSource
@@ -46,10 +47,6 @@ class ViewController: UITableViewController {
         cell.textLabel?.text = titles[indexPath.row]
         cell.accessoryType = .DisclosureIndicator
         return cell
-    }
-
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 50.0
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

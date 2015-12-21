@@ -8,12 +8,12 @@
 
 import UIKit
 
-class DestinationViewController: UIViewController {
+final class DestinationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("didTap:"))
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "didTap:")
         view.addGestureRecognizer(tapGestureRecognizer)
     }
 

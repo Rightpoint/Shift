@@ -9,7 +9,7 @@
 import UIKit
 import Shift
 
-class SplitTransitionAnimatedViewController: UITableViewController {
+final class SplitTransitionAnimatedViewController: UITableViewController {
 
     var initialNavigationControllerDelegate: UINavigationControllerDelegate?
     var currentTransition: SplitTransition?
@@ -33,6 +33,7 @@ class SplitTransitionAnimatedViewController: UITableViewController {
 
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "com.testApp.reuseIdentifier")
         tableView.separatorStyle = .None
+        tableView.rowHeight = 100.0
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -46,7 +47,7 @@ class SplitTransitionAnimatedViewController: UITableViewController {
         return 1
     }
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return colors.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -54,10 +55,6 @@ class SplitTransitionAnimatedViewController: UITableViewController {
         cell.selectionStyle = .None
         cell.backgroundColor = colors[indexPath.row]
         return cell
-    }
-
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 100.0
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

@@ -28,7 +28,7 @@
 
 import UIKit
 
-public class SplitTransition: UIPercentDrivenInteractiveTransition {
+final public class SplitTransition: UIPercentDrivenInteractiveTransition {
 
     /**
      The type of transition.
@@ -56,31 +56,19 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
         case Cancelled
     }
 
-    /**
-     * The duration (in seconds) of the transition.
-     */
+    /// The duration (in seconds) of the transition.
     public var transitionDuration: NSTimeInterval = 1.0
 
-    /**
-     * The delay before/after the transition (in seconds).
-     */
+    /// The delay before/after the transition (in seconds).
     public var transitionDelay: NSTimeInterval = 0.0
 
-    /**
-     * Animation type (e.g. push/pop). Defaults to "push".
-     */
+    /// Animation type (e.g. push/pop). Defaults to "push".
     public var transitionType: TransitionType = .Push
 
-    /**
-     * Y coordinate where top and bottom screen captures
-     * should split
-     */
-    public var splitLocation: CGFloat = 0.0
+    /// Y coordinate where top and bottom screen captures should split.
+    public var splitLocation = CGFloat(0.0)
 
-    /**
-     * Screen capture extending from split location
-     * to top of screen
-     */
+    /// Screen capture extending from split location to top of screen
     lazy var topSplitImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = self.screenCapture
@@ -89,10 +77,7 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
         return imageView
     }()
 
-    /**
-     * Screen capture extending from split location
-     * to bottom of screen
-     */
+    /// Screen capture extending from split location to bottom of screen
     lazy var bottomSplitImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = self.screenCapture
@@ -102,20 +87,16 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     }()
 
     /**
-     * In an interactive transition, splitOffset
-     * determines the vertical distance of the initial
-     * split when the cell is first tapped
-     */
-    public var splitOffset: CGFloat = 0.0
-
-    /**
-    * Scroll distance in UI points
+     In an interactive transition, splitOffset
+      determines the vertical distance of the initial
+      split when the cell is first tapped.
     */
-    var interactiveTransitionScrollDistance: CGFloat = 0.0
+    public var splitOffset = CGFloat(0.0)
 
-    /**
-    * State of interactive transition
-    */
+    /// Scroll distance in UI points.
+    var interactiveTransitionScrollDistance = CGFloat(0.0)
+
+    /// State of interactive transition.
     var transitionState: TransitionState = .Initial {
         didSet {
             switch transitionState {
@@ -131,12 +112,10 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
         }
     }
 
-    /**
-    * Transition progress in UIPoints (essentially, distance scrolled from splitLocation)
-    */
-    private var transitionProgress: CGFloat = 0.0 {
+    /// Transition progress in UIPoints (essentially, distance scrolled from splitLocation)
+    private var transitionProgress = CGFloat(0.0) {
         didSet {
-            // Calculate how much of the bottom and top screenshots have been scrolled off-screen
+            /// Calculate how much of the bottom and top screenshots have been scrolled off-screen
             let bottomHeight = bottomSplitImageView.bounds.size.height
             let topHeight = topSplitImageView.bounds.size.height
 
@@ -145,7 +124,7 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
             let topPctComplete = max(transitionProgress / topHeight,
                                     0.0)
 
-            // Set new transforms for top and bottom imageViews
+            /// Set new transforms for top and bottom imageViews
             topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0,
                                             -(topPctComplete * topHeight))
             bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0,
@@ -154,56 +133,38 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     }
 
     /**
-    * For interactive transition, reflects whether
-    * the current pan is the first one (necessary to correctly
-    * manage transition progress vis a vis initial offset)
+     For interactive transition, reflects whether
+        the current pan is the first one (necessary to correctly
+        manage transition progress vis a vis initial offset)
     */
-    private var initialPan: Bool = true
+    private var initialPan = true
 
-    /**
-    * Stores a gesture recognizer (interactive transition only)
-    */
+    /// Stores a gesture recognizer (interactive transition only)
     private var gestureRecognizer: UIPanGestureRecognizer?
 
-    /**
-    * Current transition context
-    */
+    /// Current transition context
     private var transitionContext: UIViewControllerContextTransitioning?
 
-    /**
-    * Stores the location of the most recent touch (interactive transition only)
-    */
+    /// Stores the location of the most recent touch (interactive transition only)
     private var previousTouchLocation: CGPoint?
 
-    /**
-    * Transition container view
-    */
+    /// Transition container view
     private var container: UIView?
 
-    /**
-    * Destination view controller for current transition
-    */
+    /// Destination view controller for current transition
     private var toVC: UIViewController?
 
-    /**
-    * Origin view controller for current transition
-    */
+    /// Origin view controller for current transition
     private var fromVC: UIViewController?
 
-    /**
-    * Completion for the current transition
-    */
+    /// Completion for the current transition
     private var completion: (() -> ())?
 
-    /**
-     *  Optional capture of entire screen
-     */
+    /// Optional capture of entire screen
     var screenCapture: UIImage?
 
-    /**
-     * Store the previous UINavigationControllerDelegate of the
-     * origin view controller
-     */
+
+    /// The previous UINavigationControllerDelegate of the origin view controller
     var initialNavigationControllerDelegate: UINavigationControllerDelegate?
 
     public convenience init(transitionDuration: NSTimeInterval,
@@ -283,7 +244,7 @@ private extension SplitTransition {
                         animations: (() -> ())?,
                         completion: (() -> ())?) -> Void {
 
-        // Set animation options
+        /// Set animation options
         let options: UIViewAnimationOptions = transitionType == .Interactive ? .AllowUserInteraction : .LayoutSubviews
 
         UIView.animateWithDuration(transitionDuration,
@@ -294,15 +255,15 @@ private extension SplitTransition {
                                     animations: { () -> Void in
                 animations?()
             }) { [weak self] (Bool) -> Void in
-                // When the transition is finished, top and bottom
-                // split views are removed from the view hierarchy
+                /// When the transition is finished, top and bottom
+                /// split views are removed from the view hierarchy
                 if let controller = self {
                     if !(controller.transitionType == .Interactive) {
                         controller.topSplitImageView.removeFromSuperview()
                         controller.bottomSplitImageView.removeFromSuperview()
                     }
-                    // If a completion was passed as a parameter,
-                    // execute it
+                    /// If a completion was passed as a parameter,
+                    /// execute it
                     completion?()
                 }
 
@@ -310,12 +271,12 @@ private extension SplitTransition {
     }
 
     func panGestureDidChange(gesture gesture: UIPanGestureRecognizer) -> Void {
-        // Continue tracking touch location
+        /// Continue tracking touch location
         let currentTouchLocation = gesture.locationInView(container)
 
-        // Calculate distance between current touch location and previous
-        // touch location
-        var distanceMoved: CGFloat = 0.0
+        /// Calculate distance between current touch location and previous
+        /// touch location
+        var distanceMoved = CGFloat(0.0)
 
         if let previousTouchLocation = previousTouchLocation {
             distanceMoved = currentTouchLocation.y - previousTouchLocation.y
@@ -324,19 +285,19 @@ private extension SplitTransition {
             distanceMoved = initialPan ? splitOffset : 0.0
         }
 
-        // Update transition progress
+        /// Update transition progress
         transitionProgress += (abs(currentTouchLocation.y - splitLocation) / splitLocation)
 
-        // Update interactive transition
+        /// Update interactive transition
         let percentComplete = max((transitionProgress / interactiveTransitionScrollDistance), 0.0)
 
-        // Update 'previousTouchLocation'
+        /// Update 'previousTouchLocation'
         previousTouchLocation = currentTouchLocation
 
-        // Increment 'transitionProgress' by calculated distance
+        /// Increment 'transitionProgress' by calculated distance
         transitionProgress += distanceMoved
 
-        // Update transition
+        /// Update transition
         transitionContext?.updateInteractiveTransition(percentComplete)
 
         if percentComplete >= 1.0 {
@@ -350,26 +311,26 @@ private extension SplitTransition {
     func updateTransitionState() -> Void {
         switch transitionState {
             case .Finished:
-                // split views are removed from the view hierarchy
+                /// split views are removed from the view hierarchy
                 topSplitImageView.removeFromSuperview()
                 bottomSplitImageView.removeFromSuperview()
 
                 completion?()
 
-                // Make destination view controller's view visible
+                /// Make destination view controller's view visible
                 toVC?.view.alpha = 1.0
                 fromVC?.view.alpha = 0.0
             case .Cancelled:
-                // split views are removed from the view hierarchy
+                /// split views are removed from the view hierarchy
                 topSplitImageView.removeFromSuperview()
                 bottomSplitImageView.removeFromSuperview()
 
-                // Cancel transition
+                /// Cancel transition
                 cancelInteractiveTransition()
 
                 completion?()
 
-                // Make source view controller's view visible again
+                /// Make source view controller's view visible again
                 toVC?.view.alpha = 0.0
                 fromVC?.view.alpha = 1.0
             default:
@@ -377,68 +338,68 @@ private extension SplitTransition {
         }
     }
 
-    // Returns the view controller being navigated away from
+    /// Returns the view controller being navigated away from
     func fromViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
         return transitionContext?.viewControllerForKey(UITransitionContextFromViewControllerKey)
     }
 
-    // Returns the view controller being navigated to
+    /// Returns the view controller being navigated to
     func toViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
         return transitionContext?.viewControllerForKey(UITransitionContextToViewControllerKey)
     }
 
-    // Returns the container view for the transition context
+    /// Returns the container view for the transition context
     func containerView(transitionContext: UIViewControllerContextTransitioning?) -> UIView? {
         return transitionContext?.containerView()
     }
 
     func setupTransition(transitionContext: UIViewControllerContextTransitioning?) -> Void {
-        // Take screenshot and store resulting UIImage
+        /// Take screenshot and store resulting UIImage
         screenCapture = UIWindow.screenShot()
 
-        // Grab the view in which the transition should take place.
-        // Coalesce to UIView()
+        /// Grab the view in which the transition should take place.
+        /// Coalesce to UIView()
         container = containerView(transitionContext) ?? UIView()
 
-        // Set source and destination view controllers
+        /// Set source and destination view controllers
         fromVC = fromViewController(transitionContext) ?? UIViewController()
         toVC = toViewController(transitionContext) ?? UIViewController()
         toVC?.navigationController?.navigationBarHidden = true
 
-        // Set completion handler for transition
+        /// Set completion handler for transition
         completion = {
             let complete: Bool = transitionContext?.transitionWasCancelled() ?? false
-            // Remove gesture recognizer from view
+            /// Remove gesture recognizer from view
             if let gestureRecognizer = self.gestureRecognizer {
                 gestureRecognizer.view?.removeGestureRecognizer(gestureRecognizer)
             }
 
-            // Complete the transition
+            /// Complete the transition
             transitionContext?.completeTransition(!complete)
             transitionContext?.finishInteractiveTransition()
         }
     }
 
-    // Push Transition
+    /// Push Transition
     func push(toOffset: CGFloat = 0.0,
         toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
         completion: (() -> ())?) {
-            // Add subviews
+            /// Add subviews
             containerView.addSubview(toViewController.view)
             containerView.addSubview(topSplitImageView)
             containerView.addSubview(bottomSplitImageView)
 
-            // Set initial frames for screen captures
+            /// Set initial frames for screen captures
             setInitialScreenCaptureFrames(containerView)
 
-            // source view controller is initially hidden
+            /// source view controller is initially hidden
             fromViewController.view.alpha = 0.0
             toViewController.view.alpha = 1.0
             toViewController.view.transform = CGAffineTransformMakeTranslation(0.0, topSplitImageView.frame.size.height)
 
-            // Animate all the way or only partially if a toOffset parameter is passed in
+            /// Animate all the way or only partially if a toOffset parameter is passed in
             let targetOffsetTop = toOffset != 0.0 ? -toOffset : -topSplitImageView.bounds.size.height
             let targetOffsetBottom = toOffset != 0.0 ? toOffset : bottomSplitImageView.bounds.size.height
 
@@ -453,65 +414,65 @@ private extension SplitTransition {
                 completion: completion)
     }
 
-    // Pop Transition
+    /// Pop Transition
     func pop(toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
         completion: (() -> ())?) {
 
-            // Add subviews
+            /// Add subviews
             containerView.insertSubview(toViewController.view, belowSubview: fromViewController.view)
             containerView.addSubview(toViewController.view)
             containerView.addSubview(topSplitImageView)
             containerView.addSubview(bottomSplitImageView)
 
-            // Destination view controller is initially hidden
+            /// Destination view controller is initially hidden
             toViewController.view.alpha = 0.0
 
-            // Set initial transforms for top and bottom split views
+            /// Set initial transforms for top and bottom split views
             topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, -topSplitImageView.bounds.size.height)
             bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, bottomSplitImageView.bounds.size.height)
 
             UIView.animateWithDuration(transitionDuration, delay: 0.0, usingSpringWithDamping: 0.65, initialSpringVelocity: 1.0, options: .LayoutSubviews, animations: { [weak self] () -> Void in
                 if let controller = self {
-                    // Restore the top and bottom screen captures to their original positions
+                    /// Restore the top and bottom screen captures to their original positions
                     controller.topSplitImageView.transform = CGAffineTransformIdentity
                     controller.bottomSplitImageView.transform = CGAffineTransformIdentity
 
-                    // Restore fromVC's view to its original position
+                    /// Restore fromVC's view to its original position
                     fromViewController.view.transform = CGAffineTransformMakeTranslation(0.0, controller.topSplitImageView.bounds.size.height)
                 }
                 }) { [weak self] (Bool) -> Void in
-                    // When the transition is finished, top and bottom split views are removed from the view hierarchy
+                    /// When the transition is finished, top and bottom split views are removed from the view hierarchy
                     if let controller = self {
                         controller.topSplitImageView.removeFromSuperview()
                         controller.bottomSplitImageView.removeFromSuperview()
                     }
 
-                    // Make destination view controller's view visible again
+                    /// Make destination view controller's view visible again
                     toViewController.view.alpha = 1.0
                     toViewController.navigationController?.navigationBarHidden = false
                     toViewController.navigationController?.delegate = self?.initialNavigationControllerDelegate
 
-                    // If a completion was passed as a parameter, execute it
+                    /// If a completion was passed as a parameter, execute it
                     completion?()
             }
     }
 
     func setInitialScreenCaptureFrames(containerView: UIView) {
 
-        // Set bounds for top and bottom screen captures
+        /// Set bounds for top and bottom screen captures
         let width = containerView.frame.size.width ?? 0.0
         let height = containerView.frame.size.height ?? 0.0
 
-        // Top screen capture extends from split location to top of view
+        /// Top screen capture extends from split location to top of view
         topSplitImageView.frame = CGRectMake(0.0, 0.0, width, splitLocation)
 
-        // Bottom screen capture extends from split location to bottom of view
+        /// Bottom screen capture extends from split location to bottom of view
         bottomSplitImageView.frame = CGRectMake(0.0, splitLocation, width, height - splitLocation)
 
-        // Store a distance figure to use to calculate percent complete for
-        // the interactive transition
+        /// Store a distance figure to use to calculate percent complete for
+        /// the interactive transition
         interactiveTransitionScrollDistance = max(topSplitImageView.bounds.size.height, bottomSplitImageView.bounds.size.height)
     }
 
