@@ -118,7 +118,7 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     */
     var transitionState: TransitionState = .Initial {
         didSet {
-            switch (transitionState) {
+            switch transitionState {
                 case .Initial:
                     break
                 case .Finished:
@@ -137,12 +137,19 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     private var transitionProgress: CGFloat = 0.0 {
         didSet {
             // Calculate how much of the bottom and top screenshots have been scrolled off-screen
-            let bottomPercentComplete = max(transitionProgress / bottomSplitImageView.bounds.size.height, 0.0)
-            let topPercentComplete = max(transitionProgress / topSplitImageView.bounds.size.height, 0.0)
+            let bottomHeight = bottomSplitImageView.bounds.size.height
+            let topHeight = topSplitImageView.bounds.size.height
+
+            let bottomPctComplete = max(transitionProgress / bottomHeight,
+                                        0.0)
+            let topPctComplete = max(transitionProgress / topHeight,
+                                    0.0)
 
             // Set new transforms for top and bottom imageViews
-            topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, -(topPercentComplete * (topSplitImageView.bounds.size.height)))
-            bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, (bottomPercentComplete * (bottomSplitImageView.bounds.size.height)))
+            topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0,
+                                            -(topPctComplete * topHeight))
+            bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0,
+                                                (bottomPctComplete * bottomHeight))
         }
     }
 
@@ -209,7 +216,7 @@ public class SplitTransition: UIPercentDrivenInteractiveTransition {
     }
 
     func didPan(gesture: UIPanGestureRecognizer) {
-        switch (gesture.state) {
+        switch gesture.state {
             case .Began:
                 break
             case .Changed:
@@ -253,7 +260,7 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
             fromVC.view.window?.addGestureRecognizer(gestureRecognizer)
         }
 
-        switch(transitionType) {
+        switch transitionType {
             case .Push:
                 push(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
                 break
@@ -279,13 +286,18 @@ private extension SplitTransition {
         // Set animation options
         let options: UIViewAnimationOptions = transitionType == .Interactive ? .AllowUserInteraction : .LayoutSubviews
 
-        UIView.animateWithDuration(transitionDuration, delay: 0.0, usingSpringWithDamping: 0.65, initialSpringVelocity: 1.0, options: options, animations: { () -> Void in
+        UIView.animateWithDuration(transitionDuration,
+                                    delay: 0.0,
+                                    usingSpringWithDamping: 0.65,
+                                    initialSpringVelocity: 1.0,
+                                    options: options,
+                                    animations: { () -> Void in
                 animations?()
             }) { [weak self] (Bool) -> Void in
                 // When the transition is finished, top and bottom
                 // split views are removed from the view hierarchy
                 if let controller = self {
-                    if (!(controller.transitionType == .Interactive)) {
+                    if !(controller.transitionType == .Interactive) {
                         controller.topSplitImageView.removeFromSuperview()
                         controller.bottomSplitImageView.removeFromSuperview()
                     }
@@ -336,7 +348,7 @@ private extension SplitTransition {
     }
 
     func updateTransitionState() -> Void {
-        switch (transitionState) {
+        switch transitionState {
             case .Finished:
                 // split views are removed from the view hierarchy
                 topSplitImageView.removeFromSuperview()
@@ -512,7 +524,7 @@ extension SplitTransition: UIGestureRecognizerDelegate {
         let location = gestureRecognizer.locationInView(container)
         let presentationLayer = container?.layer.presentationLayer()
 
-        if ((presentationLayer?.hitTest(location)) != nil) {
+        if (presentationLayer?.hitTest(location)) != nil {
             return true
         }
         return false

@@ -63,7 +63,9 @@ extension UIWindow {
                 CGContextConcatCTM(context, window.transform)
 
                 // Move the graphics context left and up
-                CGContextTranslateCTM(context, -window.bounds.size.width * window.layer.anchorPoint.x, -window.bounds.size.height * window.layer.anchorPoint.y)
+                CGContextTranslateCTM(context,
+                    -window.bounds.size.width * window.layer.anchorPoint.x,
+                    -window.bounds.size.height * window.layer.anchorPoint.y)
 
                 // Rotate graphics context if in landscape mode or upside down
                 rotateContext(context: context, imageSize: imageSize)
@@ -71,8 +73,7 @@ extension UIWindow {
                 // draw view hierarchy or render
                 if window.respondsToSelector(Selector("drawViewHierarchyInRect:")) {
                     window.drawViewHierarchyInRect(window.bounds, afterScreenUpdates: true)
-                }
-                else {
+                } else {
                     window.layer.renderInContext(context)
                 }
                 CGContextRestoreGState(context)
