@@ -1,7 +1,7 @@
 # Shift
 A library of custom iOS View Controller Animations and Interactions written in Swift.
 
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/raizlabs/shifter)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/raizlabs/shift)
 
 ## Installation with Carthage
 
