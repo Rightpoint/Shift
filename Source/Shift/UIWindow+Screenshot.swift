@@ -31,12 +31,13 @@ import Foundation
 
 extension UIWindow {
 
-    public class func screenShot() -> UIImage {
+    public class func screenshot() -> UIImage {
 
         // Generate image size depending on device orientation
-        let imageSize: CGSize = UIInterfaceOrientationIsPortrait(UIApplication.sharedApplication().statusBarOrientation) ? UIScreen.mainScreen().bounds.size : CGSizeMake(UIScreen.mainScreen().bounds.size.height, UIScreen.mainScreen().bounds.size.width)
+        let imageSize: CGSize = UIScreen.mainScreen().bounds.size
 
         UIGraphicsBeginImageContextWithOptions(imageSize, false, UIScreen.mainScreen().scale)
+        UIGraphicsBeginImageContext(UIScreen.mainScreen().bounds.size)
         let context: CGContextRef? = UIGraphicsGetCurrentContext()
 
         // Draw view hierarchy
@@ -57,18 +58,6 @@ extension UIWindow {
 
                 // Save the current graphics state
                 CGContextSaveGState(context)
-
-                // Move the graphics context to the center of the window
-                CGContextTranslateCTM(context, window.center.x, window.center.y)
-                CGContextConcatCTM(context, window.transform)
-
-                // Move the graphics context left and up
-                CGContextTranslateCTM(context,
-                    -window.bounds.size.width * window.layer.anchorPoint.x,
-                    -window.bounds.size.height * window.layer.anchorPoint.y)
-
-                // Rotate graphics context if in landscape mode or upside down
-                rotateContext(context: context, imageSize: imageSize)
 
                 // draw view hierarchy or render
                 if window.respondsToSelector(Selector("drawViewHierarchyInRect:")) {

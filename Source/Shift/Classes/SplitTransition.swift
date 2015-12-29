@@ -466,7 +466,7 @@ private extension SplitTransition {
 
                     /// Make destination view controller's view visible again
                     toViewController.view.alpha = 1.0
-                    toViewController.navigationController?.navigationBarHidden = false
+                    toViewController.navigationController?.navigationBarHidden = self?.fromVC?.navigationController?.navigationBar.hidden ?? false
                     toViewController.navigationController?.delegate = self?.initialNavigationControllerDelegate
 
                     /// If a completion was passed as a parameter, execute it
