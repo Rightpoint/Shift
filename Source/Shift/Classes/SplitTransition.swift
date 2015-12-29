@@ -44,6 +44,17 @@ final public class SplitTransition: UIPercentDrivenInteractiveTransition {
     }
 
     /**
+     Scope of screenshot used to generate top and bottom split views
+
+     - View:   bounds of fromVC's view
+     - Window: bounds of window
+     */
+    public enum ScreenshotScope {
+        case View
+        case Window
+    }
+
+    /**
      The progress state of the transition.
 
      - Initial: transition has not begun.
@@ -64,6 +75,9 @@ final public class SplitTransition: UIPercentDrivenInteractiveTransition {
 
     /// Animation type (e.g. push/pop). Defaults to "push".
     public var transitionType: TransitionType = .Push
+
+    /// Scope of screenshot (determines whether to use view's bounds or window's bounds). Defaults to "view".
+    public var screenshotScope: ScreenshotScope = .View
 
     /// Y coordinate where top and bottom screen captures should split.
     public var splitLocation = CGFloat(0.0)
@@ -354,8 +368,6 @@ private extension SplitTransition {
     }
 
     func setupTransition(transitionContext: UIViewControllerContextTransitioning?) -> Void {
-        /// Take screenshot and store resulting UIImage
-        screenCapture = UIWindow.screenShot()
 
         /// Grab the view in which the transition should take place.
         /// Coalesce to UIView()
@@ -365,6 +377,9 @@ private extension SplitTransition {
         fromVC = fromViewController(transitionContext) ?? UIViewController()
         toVC = toViewController(transitionContext) ?? UIViewController()
         toVC?.navigationController?.navigationBarHidden = true
+
+        /// Take screenshot and store resulting UIImage
+        screenCapture = screenshotScope == .Window ? UIWindow.screenshot() : screenshot()
 
         /// Set completion handler for transition
         completion = {
@@ -476,6 +491,23 @@ private extension SplitTransition {
         interactiveTransitionScrollDistance = max(topSplitImageView.bounds.size.height, bottomSplitImageView.bounds.size.height)
     }
 
+    func screenshot() -> UIImage {
+        let viewFrame = fromVC?.view.frame ?? CGRectZero
+        UIGraphicsBeginImageContext(viewFrame.size)
+
+        if let ctx = UIGraphicsGetCurrentContext() {
+            UIColor.blackColor().set()
+            CGContextFillRect(ctx, CGRectMake(0.0, 0.0, viewFrame.width, viewFrame.height))
+            fromVC?.view.layer.renderInContext(ctx)
+        } else {
+            print("Unable to get current graphics context")
+        }
+
+        let screenshot = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return screenshot
+    }
 }
 
 extension SplitTransition: UIGestureRecognizerDelegate {
