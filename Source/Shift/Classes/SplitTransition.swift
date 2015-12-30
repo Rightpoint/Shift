@@ -481,10 +481,10 @@ private extension SplitTransition {
         let height = containerView.frame.size.height ?? 0.0
 
         /// Top screen capture extends from split location to top of view
-        topSplitImageView.frame = CGRectMake(0.0, 0.0, width, splitLocation)
+        topSplitImageView.frame = CGRect(x: 0.0, y: 0.0, width: width, height: splitLocation)
 
         /// Bottom screen capture extends from split location to bottom of view
-        bottomSplitImageView.frame = CGRectMake(0.0, splitLocation, width, height - splitLocation)
+        bottomSplitImageView.frame = CGRect(x: 0.0, y: splitLocation, width: width, height: height - splitLocation)
 
         /// Store a distance figure to use to calculate percent complete for
         /// the interactive transition
@@ -497,7 +497,7 @@ private extension SplitTransition {
 
         if let ctx = UIGraphicsGetCurrentContext() {
             UIColor.blackColor().set()
-            CGContextFillRect(ctx, CGRectMake(0.0, 0.0, viewFrame.width, viewFrame.height))
+            CGContextFillRect(ctx, CGRect(x: 0.0, y: 0.0, width: viewFrame.width, height: viewFrame.height))
             fromVC?.view.layer.renderInContext(ctx)
         } else {
             print("Unable to get current graphics context")
