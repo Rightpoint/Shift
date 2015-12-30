@@ -16,12 +16,14 @@ final class ViewController: UITableViewController {
 
     let titles = [
         "Split Transition (Animated)",
-        "Split Transition (Interactive)"
+        "Split Transition (Interactive)",
+        "Zoom-push Transition",
     ]
 
     let exampleViewControllers = [
         SplitTransitionAnimatedViewController(),
-        SplitTransitionInteractiveViewController()
+        SplitTransitionInteractiveViewController(),
+        ZoomPushTransitionViewController(),
     ]
 
     override func viewDidLoad() {

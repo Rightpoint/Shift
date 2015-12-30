@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C9C88B81C2901FC00803EA3 /* ZoomPushTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C9C88B71C2901FC00803EA3 /* ZoomPushTransition.swift */; };
 		B5F88B501C19D96C00D10000 /* Shift.h in Headers */ = {isa = PBXBuildFile; fileRef = B5F88B4F1C19D96C00D10000 /* Shift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5F88B651C19DC8E00D10000 /* SplitTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B641C19DC8E00D10000 /* SplitTransition.swift */; };
 		B5F88B671C19DCAC00D10000 /* UIWindow+Screenshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B661C19DCAC00D10000 /* UIWindow+Screenshot.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C9C88B71C2901FC00803EA3 /* ZoomPushTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomPushTransition.swift; sourceTree = "<group>"; };
 		B5F88B4C1C19D96C00D10000 /* Shift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F88B4F1C19D96C00D10000 /* Shift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shift.h; sourceTree = "<group>"; };
 		B5F88B511C19D96C00D10000 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				B5F88B641C19DC8E00D10000 /* SplitTransition.swift */,
+				3C9C88B71C2901FC00803EA3 /* ZoomPushTransition.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -170,6 +173,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C9C88B81C2901FC00803EA3 /* ZoomPushTransition.swift in Sources */,
 				B5F88B651C19DC8E00D10000 /* SplitTransition.swift in Sources */,
 				B5F88B671C19DCAC00D10000 /* UIWindow+Screenshot.swift in Sources */,
 			);
