@@ -31,8 +31,8 @@ import UIKit
 
 public final class ZoomPushTransition: NSObject {
 
-    private let transitionTime = NSTimeInterval(0.35)
-    private let scaleChangePct = CGFloat(0.33)
+    public var transitionTime   = NSTimeInterval(0.35)
+    public var scaleChangePct   = CGFloat(0.33)
 
 }
 
