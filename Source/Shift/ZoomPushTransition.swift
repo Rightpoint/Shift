@@ -31,7 +31,10 @@ import UIKit
 
 public final class ZoomPushTransition: NSObject {
 
+    /// Duration (seconds) of the transition.
     public var transitionTime   = NSTimeInterval(0.35)
+
+    /// a transform which scales the destination view controller's view by `(sx, sy)' at the start of the transition.
     public var scaleChangePct   = CGFloat(0.33)
 
 }
