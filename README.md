@@ -1,7 +1,7 @@
 # Shift
 A library of custom iOS View Controller Animations and Interactions written in Swift.
 
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/raizlabs/shifter)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/raizlabs/shift)
 
 ## Installation with Carthage
 
@@ -63,7 +63,7 @@ extension ViewController: UINavigationControllerDelegate {
 
 ```
 
-### SplitAnimation
+### SplitTransition
 
 <p align="center" >
 <br/>
@@ -71,12 +71,13 @@ extension ViewController: UINavigationControllerDelegate {
 <br/>
 </p>
 
-`SplitAnimation` exposes 4 key properties: 
+`SplitTransition` exposes 5 key properties: 
 
-1. `splitLocation` (optional, defaults to `0.0`) - y coordinate where the top and bottom views part
-2. `transitionDuration` (optional, defaults to `1.0`) - duration (in seconds) of the transition animation 
-3. `transitionDelay` (optional, defaults to `0.0`) - delay (in seconds) before the start of the transition animation
-4. `transitionType` (optional, defaults to `.Push`) - `.Push` or `.Pop`
+1. `screenshotScope` - (optional, defaults to `.View`) - determines whether top and bottom views are sourced from container view or entire window
+2. `splitLocation` (optional, defaults to `0.0`) - y coordinate where the top and bottom views part
+3. `transitionDuration` (optional, defaults to `1.0`) - duration (in seconds) of the transition animation 
+4. `transitionDelay` (optional, defaults to `0.0`) - delay (in seconds) before the start of the transition animation
+5. `transitionType` (optional, defaults to `.Push`) - `.Push`, `.Pop`, or `.Interactive`. Setting `transitionType` to `.Interactive` will allow users to control the progress of the transition with a drag gesture.
 
 Set these properties in your implementation of	`UINavigationControllerDelegateTransitioning`:
 
@@ -100,5 +101,4 @@ func navigationController(navigationController: UINavigationController,
     return currentTransition
 }
 ```
-
 

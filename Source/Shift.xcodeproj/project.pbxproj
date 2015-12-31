@@ -97,9 +97,9 @@
 			buildPhases = (
 				B5F88B471C19D96C00D10000 /* Sources */,
 				B5F88B481C19D96C00D10000 /* Frameworks */,
+				3CFE16171C1FE06D007FE683 /* Swiftlint */,
 				B5F88B491C19D96C00D10000 /* Headers */,
 				B5F88B4A1C19D96C00D10000 /* Resources */,
-				3CFE16171C1FE06D007FE683 /* Swiftlint */,
 			);
 			buildRules = (
 			);

@@ -71,8 +71,7 @@ extension ZoomPushTransition: UIViewControllerAnimatedTransitioning {
                 fromVC.view.alpha = 1.0
 
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
-            }
-        )
+            })
     }
 
 }

@@ -78,6 +78,7 @@ extension SplitTransitionAnimatedViewController: UINavigationControllerDelegate 
                 let splitTransition = SplitTransition()
                 splitTransition.transitionDuration = 2.0
                 splitTransition.transitionType = .Push
+                splitTransition.screenshotScope = .Window
                 splitTransition.splitLocation = currentCell != nil ? CGRectGetMidY(currentCell!.frame) + navigationController.navigationBar.frame.size.height : CGRectGetMidY(view.frame) + navigationController.navigationBar.frame.size.height
                 currentTransition = splitTransition
             }

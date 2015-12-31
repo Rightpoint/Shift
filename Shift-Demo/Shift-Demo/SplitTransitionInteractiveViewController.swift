@@ -80,6 +80,7 @@ extension SplitTransitionInteractiveViewController: UINavigationControllerDelega
                     initialNavigationControllerDelegate: initialNavigationControllerDelegate)
                 splitTransition.splitOffset = 50.0
                 splitTransition.splitLocation = currentSplitLocation
+                splitTransition.screenshotScope = .Window
                 currentTransition = splitTransition
             }
             else if (operation == .Pop && toVC == self) {
