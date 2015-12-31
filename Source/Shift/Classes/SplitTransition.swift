@@ -44,6 +44,17 @@ final public class SplitTransition: UIPercentDrivenInteractiveTransition {
     }
 
     /**
+     Scope of screenshot used to generate top and bottom split views
+
+     - View:   bounds of fromVC's view
+     - Window: bounds of window
+     */
+    public enum ScreenshotScope {
+        case View
+        case Window
+    }
+
+    /**
      The progress state of the transition.
 
      - Initial: transition has not begun.
@@ -64,6 +75,9 @@ final public class SplitTransition: UIPercentDrivenInteractiveTransition {
 
     /// Animation type (e.g. push/pop). Defaults to "push".
     public var transitionType: TransitionType = .Push
+
+    /// Scope of screenshot (determines whether to use view's bounds or window's bounds). Defaults to "view".
+    public var screenshotScope: ScreenshotScope = .View
 
     /// Y coordinate where top and bottom screen captures should split.
     public var splitLocation = CGFloat(0.0)
@@ -211,7 +225,7 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
             toVC = toVC,
             container = container,
             completion = completion else {
-                print("animation setup failed")
+                debugPrint("animation setup failed")
                 return
         }
 
@@ -338,24 +352,40 @@ private extension SplitTransition {
         }
     }
 
-    /// Returns the view controller being navigated away from
+    /**
+    Return origin view controller.
+
+    - parameter transitionContext: an optional `UIViewControllerContextTransitioning`.
+
+    - returns: an optional `UIViewController`.
+    */
     func fromViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
         return transitionContext?.viewControllerForKey(UITransitionContextFromViewControllerKey)
     }
 
-    /// Returns the view controller being navigated to
+    /**
+    Return destination view controller..
+
+    - parameter transitionContext: an optional `UIViewControllerContextTransitioning`.
+
+    - returns: an optional `UIViewController`.
+    */
     func toViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
         return transitionContext?.viewControllerForKey(UITransitionContextToViewControllerKey)
     }
 
-    /// Returns the container view for the transition context
+    /**
+    Return the container view for the given transition context.
+
+    - parameter transitionContext: an optional `UIViewControllerContextTransitioning`.
+
+    - returns: the container `UIView` for the transition context.
+    */
     func containerView(transitionContext: UIViewControllerContextTransitioning?) -> UIView? {
         return transitionContext?.containerView()
     }
 
     func setupTransition(transitionContext: UIViewControllerContextTransitioning?) -> Void {
-        /// Take screenshot and store resulting UIImage
-        screenCapture = UIWindow.screenShot()
 
         /// Grab the view in which the transition should take place.
         /// Coalesce to UIView()
@@ -365,6 +395,9 @@ private extension SplitTransition {
         fromVC = fromViewController(transitionContext) ?? UIViewController()
         toVC = toViewController(transitionContext) ?? UIViewController()
         toVC?.navigationController?.navigationBarHidden = true
+
+        /// Take screenshot and store resulting UIImage
+        screenCapture = screenshotScope == .Window ? UIWindow.screenshot() : screenshot()
 
         /// Set completion handler for transition
         completion = {
@@ -380,7 +413,15 @@ private extension SplitTransition {
         }
     }
 
-    /// Push Transition
+    /**
+    Push fromViewController onto navigation stack.
+
+    - parameter toOffset:           vertical offset at which to start interactive animation.
+    - parameter toViewController:   destination view controller.
+    - parameter fromViewController: origin view controller.
+    - parameter containerView:      container view for transition context.
+    - parameter completion:         completion handler.
+    */
     func push(toOffset: CGFloat = 0.0,
         toViewController: UIViewController,
         fromViewController: UIViewController,
@@ -414,7 +455,14 @@ private extension SplitTransition {
                 completion: completion)
     }
 
-    /// Pop Transition
+    /**
+     Pop fromViewController from navigation stack.
+
+     - parameter toViewController:   destination view controller.
+     - parameter fromViewController: origin view controller.
+     - parameter containerView:      container view for transition context.
+     - parameter completion:         completion handler.
+     */
     func pop(toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
@@ -451,7 +499,7 @@ private extension SplitTransition {
 
                     /// Make destination view controller's view visible again
                     toViewController.view.alpha = 1.0
-                    toViewController.navigationController?.navigationBarHidden = false
+                    toViewController.navigationController?.navigationBarHidden = self?.fromVC?.navigationController?.navigationBar.hidden ?? false
                     toViewController.navigationController?.delegate = self?.initialNavigationControllerDelegate
 
                     /// If a completion was passed as a parameter, execute it
@@ -466,16 +514,33 @@ private extension SplitTransition {
         let height = containerView.frame.size.height ?? 0.0
 
         /// Top screen capture extends from split location to top of view
-        topSplitImageView.frame = CGRectMake(0.0, 0.0, width, splitLocation)
+        topSplitImageView.frame = CGRect(x: 0.0, y: 0.0, width: width, height: splitLocation)
 
         /// Bottom screen capture extends from split location to bottom of view
-        bottomSplitImageView.frame = CGRectMake(0.0, splitLocation, width, height - splitLocation)
+        bottomSplitImageView.frame = CGRect(x: 0.0, y: splitLocation, width: width, height: height - splitLocation)
 
         /// Store a distance figure to use to calculate percent complete for
         /// the interactive transition
         interactiveTransitionScrollDistance = max(topSplitImageView.bounds.size.height, bottomSplitImageView.bounds.size.height)
     }
 
+    func screenshot() -> UIImage {
+        let viewFrame = fromVC?.view.frame ?? CGRectZero
+        UIGraphicsBeginImageContext(viewFrame.size)
+
+        if let ctx = UIGraphicsGetCurrentContext() {
+            UIColor.blackColor().set()
+            CGContextFillRect(ctx, CGRect(x: 0.0, y: 0.0, width: viewFrame.width, height: viewFrame.height))
+            fromVC?.view.layer.renderInContext(ctx)
+        } else {
+            debugPrint("Unable to get current graphics context")
+        }
+
+        let screenshot = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return screenshot
+    }
 }
 
 extension SplitTransition: UIGestureRecognizerDelegate {
