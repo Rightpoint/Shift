@@ -352,17 +352,35 @@ private extension SplitTransition {
         }
     }
 
-    /// Returns the view controller being navigated away from
+    /**
+    Return origin view controller.
+
+    - parameter transitionContext: an optional `UIViewControllerContextTransitioning`.
+
+    - returns: an optional `UIViewController`.
+    */
     func fromViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
         return transitionContext?.viewControllerForKey(UITransitionContextFromViewControllerKey)
     }
 
-    /// Returns the view controller being navigated to
+    /**
+    Return destination view controller..
+
+    - parameter transitionContext: an optional `UIViewControllerContextTransitioning`.
+
+    - returns: an optional `UIViewController`.
+    */
     func toViewController(transitionContext: UIViewControllerContextTransitioning?) -> UIViewController? {
         return transitionContext?.viewControllerForKey(UITransitionContextToViewControllerKey)
     }
 
-    /// Returns the container view for the transition context
+    /**
+    Return the container view for the given transition context.
+
+    - parameter transitionContext: an optional `UIViewControllerContextTransitioning`.
+
+    - returns: the container `UIView` for the transition context.
+    */
     func containerView(transitionContext: UIViewControllerContextTransitioning?) -> UIView? {
         return transitionContext?.containerView()
     }
@@ -395,7 +413,15 @@ private extension SplitTransition {
         }
     }
 
-    /// Push Transition
+    /**
+    Push fromViewController onto navigation stack.
+
+    - parameter toOffset:           vertical offset at which to start interactive animation.
+    - parameter toViewController:   destination view controller.
+    - parameter fromViewController: origin view controller.
+    - parameter containerView:      container view for transition context.
+    - parameter completion:         completion handler.
+    */
     func push(toOffset: CGFloat = 0.0,
         toViewController: UIViewController,
         fromViewController: UIViewController,
@@ -429,7 +455,14 @@ private extension SplitTransition {
                 completion: completion)
     }
 
-    /// Pop Transition
+    /**
+     Pop fromViewController from navigation stack.
+
+     - parameter toViewController:   destination view controller.
+     - parameter fromViewController: origin view controller.
+     - parameter containerView:      container view for transition context.
+     - parameter completion:         completion handler.
+     */
     func pop(toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
