@@ -12,6 +12,7 @@ import UIKit
 
 final class ZoomPushTransitionViewController: UIViewController {
 
+    var initialNavigationControllerDelegate: UINavigationControllerDelegate?
     private let button = UIButton()
 
     override func loadView() {
@@ -39,6 +40,7 @@ extension ZoomPushTransitionViewController {
         destinationController.view.backgroundColor = UIColor.redColor()
         navigationController?.delegate = self
         navigationController?.pushViewController(destinationController, animated: true)
+        navigationController?.delegate = initialNavigationControllerDelegate
     }
 
 }
