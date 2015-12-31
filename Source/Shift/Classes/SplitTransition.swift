@@ -225,7 +225,7 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
             toVC = toVC,
             container = container,
             completion = completion else {
-                print("animation setup failed")
+                debugPrint("animation setup failed")
                 return
         }
 
@@ -533,7 +533,7 @@ private extension SplitTransition {
             CGContextFillRect(ctx, CGRect(x: 0.0, y: 0.0, width: viewFrame.width, height: viewFrame.height))
             fromVC?.view.layer.renderInContext(ctx)
         } else {
-            print("Unable to get current graphics context")
+            debugPrint("Unable to get current graphics context")
         }
 
         let screenshot = UIGraphicsGetImageFromCurrentImageContext()

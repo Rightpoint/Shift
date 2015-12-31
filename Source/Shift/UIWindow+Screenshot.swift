@@ -70,7 +70,7 @@ extension UIWindow {
         }
         else {
             // Log an error message in case of failure
-            print("unable to get current graphics context")
+            debugPrint("unable to get current graphics context")
         }
     }
 
