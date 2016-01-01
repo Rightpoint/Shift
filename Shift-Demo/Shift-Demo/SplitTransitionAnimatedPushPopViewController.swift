@@ -60,7 +60,9 @@ final class SplitTransitionAnimatedPushPopViewController: UITableViewController 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         navigationController?.delegate = self
         currentCell = tableView.cellForRowAtIndexPath(indexPath)
-        let destinationViewController = DestinationViewController()
+        let destinationViewController = DestinationViewController(withDismissalHandler: { [weak self] in
+            self?.navigationController?.popViewControllerAnimated(true)
+        })
         destinationViewController.view.backgroundColor = colors[indexPath.row]
         navigationController?.pushViewController(destinationViewController, animated: true)
     }

@@ -36,7 +36,9 @@ final class ZoomPushTransitionViewController: UIViewController {
 extension ZoomPushTransitionViewController {
 
     func buttonAction() {
-        let destinationController = DestinationViewController()
+        let destinationController = DestinationViewController(withDismissalHandler: { [weak self] in
+            self?.navigationController?.popViewControllerAnimated(true)
+        })
         destinationController.view.backgroundColor = UIColor.redColor()
         navigationController?.delegate = self
         navigationController?.pushViewController(destinationController, animated: true)

@@ -55,7 +55,9 @@ final class SplitTransitionAnimatedPresentDismissViewControllerViewController: U
         currentCell = tableView.cellForRowAtIndexPath(indexPath)
 
         // Configure destination view controller
-        let destinationViewController = DestinationViewController()
+        let destinationViewController = DestinationViewController(withDismissalHandler: { [weak self] in
+            self?.dismissViewControllerAnimated(true, completion: nil)
+        })
         destinationViewController.view.backgroundColor = colors[indexPath.row]
         destinationViewController.modalPresentationStyle = .Custom
 

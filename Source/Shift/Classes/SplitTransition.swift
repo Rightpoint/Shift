@@ -537,55 +537,6 @@ private extension SplitTransition {
             }
     }
 
-    func present(toViewController: UIViewController,
-        fromViewController: UIViewController,
-        containerView: UIView,
-        completion: (() -> ())?) -> Void {
-            // Add subviews
-            containerView.clipsToBounds = true
-            containerView.addSubview(toViewController.view)
-            containerView.addSubview(topSplitImageView)
-            containerView.addSubview(bottomSplitImageView)
-
-            // Set initial frames for screen captures
-            setInitialScreenCaptureFrames(containerView)
-
-            fromViewController.view.alpha = 0.0
-            toViewController.view.alpha = 1.0
-            toViewController.view.transform = CGAffineTransformMakeTranslation(0.0, topSplitImageView.frame.size.height)
-
-            let animations = { [weak self] in
-                if let bottom = self?.bottomSplitImageView,
-                    top = self?.topSplitImageView {
-                    top.transform = CGAffineTransformMakeTranslation(0.0, -top.bounds.size.height)
-                    bottom.transform = CGAffineTransformMakeTranslation(0.0, bottom.bounds.size.height)
-                    toViewController.view.transform = CGAffineTransformIdentity
-                }
-            }
-
-            UIView.animateWithDuration(transitionDuration,
-                                        delay: 0.0,
-                                        usingSpringWithDamping: 0.65,
-                                        initialSpringVelocity: 1.0,
-                                        options: .LayoutSubviews,
-                                        animations: { () -> Void in
-                    animations()
-                }) { [weak self] (Bool) -> Void in
-                    /// When the transition is finished, top and bottom
-                    /// split views are removed from the view hierarchy
-                    if let controller = self {
-                        if controller.transitionType != .Interactive {
-                            controller.topSplitImageView.removeFromSuperview()
-                            controller.bottomSplitImageView.removeFromSuperview()
-                        }
-                        /// If a completion was passed as a parameter,
-                        /// execute it
-                        completion?()
-                    }
-
-            }
-    }
-
     func setInitialScreenCaptureFrames(containerView: UIView) {
 
         /// Set bounds for top and bottom screen captures
