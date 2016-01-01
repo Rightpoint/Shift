@@ -63,7 +63,7 @@ extension ViewController: UINavigationControllerDelegate {
 
 ```
 
-### SplitTransition
+### SplitTransition (Push/Pop)
 
 <p align="center" >
 <br/>
@@ -99,6 +99,38 @@ func navigationController(navigationController: UINavigationController,
     }
 
     return currentTransition
+}
+```
+
+### SplitTransition (Present/Dismiss)
+
+Using `SplitTransition` to present a view controller modally is simple. For the presented view controller, set `modalPresentationStyle` to `.Custom`. For the `SplitTransition`, set `transitionType` to `.Presentation`, passing a presenting view controller and a presented view controller into the constructor. In addition, set your presented view controller's `transitioningDelegate` to the newly created `SplitTransition`.
+
+```swift
+// Configure destination view controller
+let destinationViewController = UIViewController()
+destinationViewController.modalPresentationStyle = .Custom
+
+// Configure transition
+let currentTransition = SplitTransition()
+currentTransition?.transitionType = .Presentation(self, destinationViewController)
+
+// Set transitioning delegate on destination view controller
+destinationViewController.transitioningDelegate = currentTransition
+```
+
+Lastly, in `presentViewController`'s completion handler set `transitionType` to `.Dismiss`, again passing in a presented view controller and a presenting view controller:
+
+```swift
+presentViewController(destinationViewController, animated: true) { [weak self] () -> Void in
+    guard let vc = self,
+    presentedVC = self?.presentedViewController else {
+        debugPrint("SplitTransitionAnimatedPresentDismissViewControllerViewController has been deallocated")
+        return
+    }
+    
+    // After presentation has finished, update transitionType on currentTransition
+    vc.currentTransition?.transitionType = .Dismissal(presentedVC, vc)
 }
 ```
 
