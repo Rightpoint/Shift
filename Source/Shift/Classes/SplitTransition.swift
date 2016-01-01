@@ -28,7 +28,25 @@
 
 import UIKit
 
-final public class SplitTransition: UIPercentDrivenInteractiveTransition {
+
+extension TransitionType: Equatable {}
+
+public func == (lhs: TransitionType, rhs: TransitionType) -> Bool {
+    switch(lhs, rhs) {
+        case (.Push, .Push):
+            return true
+        case (.Pop, .Pop):
+            return true
+        case (.Interactive, .Interactive):
+            return true
+        case (let .Dismissal(vc1, vc2), let .Dismissal(vc3, vc4)):
+            return vc1 == vc3 && vc2 == vc4
+        case (let .Presentation(vc1, vc2), let .Presentation(vc3, vc4)):
+            return vc1 == vc3 && vc2 == vc4
+        default:
+            return false
+    }
+}
 
     /**
      The type of transition.
@@ -36,12 +54,18 @@ final public class SplitTransition: UIPercentDrivenInteractiveTransition {
      - Push: A push transition.
      - Pop:  A pop transition.
      - Interactive:  An interactive transition.
+     - Presentation: a modal transition.
     */
     public enum TransitionType {
         case Push
         case Pop
         case Interactive
+        case Presentation(UIViewController, UIViewController)
+        case Dismissal(UIViewController, UIViewController)
     }
+
+
+final public class SplitTransition: UIPercentDrivenInteractiveTransition {
 
     /**
      Scope of screenshot used to generate top and bottom split views
@@ -238,12 +262,13 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
         switch transitionType {
             case .Push:
                 push(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
-                break
             case .Pop:
                 pop(toVC, fromViewController: fromVC, containerView: container, completion: completion)
-                break
             case .Interactive:
                 push(splitOffset, toViewController: toVC, fromViewController: fromVC, containerView: container, completion: nil)
+            case .Presentation:
+                present(toVC, fromViewController: fromVC, containerView: container, completion: completion)
+            case .Dismissal:
                 break
             }
     }
@@ -390,10 +415,20 @@ private extension SplitTransition {
         /// Grab the view in which the transition should take place.
         /// Coalesce to UIView()
         container = containerView(transitionContext) ?? UIView()
+        guard let container = container else {
+            debugPrint("Failed to set up container view")
+            return
+        }
+
+        container.frame = fromVC?.view.superview?.frame ?? container.frame
 
         /// Set source and destination view controllers
-        fromVC = fromViewController(transitionContext) ?? UIViewController()
-        toVC = toViewController(transitionContext) ?? UIViewController()
+        if fromVC == nil {
+            fromVC = fromViewController(transitionContext) ?? UIViewController()
+        }
+        if toVC == nil {
+            toVC = toViewController(transitionContext) ?? UIViewController()
+        }
         toVC?.navigationController?.navigationBarHidden = true
 
         /// Take screenshot and store resulting UIImage
@@ -507,6 +542,56 @@ private extension SplitTransition {
             }
     }
 
+    func present(toViewController: UIViewController,
+        fromViewController: UIViewController,
+        containerView: UIView,
+        completion: (() -> ())?) -> Void {
+            // Add subviews
+            containerView.clipsToBounds = true
+            containerView.addSubview(toViewController.view)
+            containerView.addSubview(topSplitImageView)
+            containerView.addSubview(bottomSplitImageView)
+
+            // Set initial frames for screen captures
+            setInitialScreenCaptureFrames(containerView)
+
+            fromViewController.view.alpha = 0.0
+            toViewController.view.alpha = 1.0
+            toViewController.view.transform = CGAffineTransformMakeTranslation(0.0, topSplitImageView.frame.size.height)
+
+            let animations = { [weak self] in
+                if let bottom = self?.bottomSplitImageView,
+                    top = self?.topSplitImageView {
+                    top.transform = CGAffineTransformMakeTranslation(0.0, -top.bounds.size.height)
+                    bottom.transform = CGAffineTransformMakeTranslation(0.0, bottom.bounds.size.height)
+                    toViewController.view.transform = CGAffineTransformIdentity
+                }
+            }
+
+            UIView.animateWithDuration(transitionDuration,
+                                        delay: 0.0,
+                                        usingSpringWithDamping: 0.65,
+                                        initialSpringVelocity: 1.0,
+                                        options: .LayoutSubviews,
+                                        animations: { () -> Void in
+                    animations()
+                }) { [weak self] (Bool) -> Void in
+                    /// When the transition is finished, top and bottom
+                    /// split views are removed from the view hierarchy
+                    if let controller = self {
+                        if controller.transitionType != .Interactive {
+                            controller.topSplitImageView.removeFromSuperview()
+                            controller.bottomSplitImageView.removeFromSuperview()
+                        }
+                        /// If a completion was passed as a parameter,
+                        /// execute it
+                        completion?()
+                    }
+
+            }
+    }
+
+
     func setInitialScreenCaptureFrames(containerView: UIView) {
 
         /// Set bounds for top and bottom screen captures
@@ -566,6 +651,14 @@ extension SplitTransition: UIViewControllerTransitioningDelegate {
 
     public func interactionControllerForDismissal(animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         return transitionType == .Interactive ? self : nil
+    }
+
+    public func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return transitionType != .Interactive ? self : nil
+    }
+
+    public func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return transitionType != .Interactive ? self : nil
     }
 
 }
