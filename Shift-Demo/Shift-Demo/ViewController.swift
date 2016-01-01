@@ -15,15 +15,17 @@ final class ViewController: UITableViewController {
     var currentSplitLocation: CGFloat = 0.0
 
     let titles = [
-        "Split Transition Push/Pop (Animated)",
+        "Split Transition (Animated)",
         "Split Transition Present/Dismiss (Animated)",
-        "Split Transition (Interactive)"
+        "Split Transition (Interactive)",
+        "Zoom-push Transition",
     ]
 
     let exampleViewControllers = [
         SplitTransitionAnimatedPushPopViewController(),
         SplitTransitionAnimatedPresentDismissViewControllerViewController(),
-        SplitTransitionInteractiveViewController()
+        SplitTransitionInteractiveViewController(),
+        ZoomPushTransitionViewController(),
     ]
 
     override func viewDidLoad() {

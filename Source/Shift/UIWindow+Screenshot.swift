@@ -37,32 +37,29 @@ extension UIWindow {
         let imageSize: CGSize = UIScreen.mainScreen().bounds.size
 
         UIGraphicsBeginImageContextWithOptions(imageSize, false, UIScreen.mainScreen().scale)
-        UIGraphicsBeginImageContext(UIScreen.mainScreen().bounds.size)
-        let context: CGContextRef? = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()
 
         // Draw view hierarchy
         drawWindow(inContext: context, imageSize: imageSize)
 
         // Grab rendered image
-        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
         return image
     }
 
-    class func drawWindow(inContext context: CGContextRef?,
-                            imageSize: CGSize) -> Void {
-
+    class func drawWindow(inContext context: CGContextRef?, imageSize: CGSize) -> Void {
         if let context = context {
             for window in UIApplication.sharedApplication().windows {
-
                 // Save the current graphics state
                 CGContextSaveGState(context)
 
                 // draw view hierarchy or render
                 if window.respondsToSelector(Selector("drawViewHierarchyInRect:")) {
                     window.drawViewHierarchyInRect(window.bounds, afterScreenUpdates: true)
-                } else {
+                }
+                else {
                     window.layer.renderInContext(context)
                 }
                 CGContextRestoreGState(context)
@@ -74,34 +71,35 @@ extension UIWindow {
         }
     }
 
-    class func rotateContext(context context: CGContextRef,
-                                imageSize: CGSize) -> Void {
-
-        let pi_2: CGFloat = CGFloat(M_PI_2)
-        let pi: CGFloat = CGFloat(M_PI)
+    class func rotateContext(context context: CGContextRef, imageSize: CGSize) -> Void {
+        let pi_2 = CGFloat(M_PI_2)
+        let pi = CGFloat(M_PI)
 
         switch UIApplication.sharedApplication().statusBarOrientation {
-            case UIInterfaceOrientation.LandscapeLeft:
-                // Rotate graphics context 90 degrees clockwise
-                CGContextRotateCTM(context, pi_2)
+        case .LandscapeLeft:
+            // Rotate graphics context 90 degrees clockwise
+            CGContextRotateCTM(context, pi_2)
 
-                // Move graphics context up
-                CGContextTranslateCTM(context, 0, -imageSize.width)
-            case UIInterfaceOrientation.LandscapeRight:
-                // Rotate graphics context 90 degrees counter-clockwise
-                CGContextRotateCTM(context, -pi_2)
+            // Move graphics context up
+            CGContextTranslateCTM(context, 0, -imageSize.width)
 
-                // Move graphics context left
-                CGContextTranslateCTM(context, -imageSize.height, 0)
-            case UIInterfaceOrientation.PortraitUpsideDown:
-                // Rotate graphics context 180 degrees
-                CGContextRotateCTM(context, pi)
+        case .LandscapeRight:
+            // Rotate graphics context 90 degrees counter-clockwise
+            CGContextRotateCTM(context, -pi_2)
 
-                // Move graphics context left and up
-                CGContextTranslateCTM(context, -imageSize.width, -imageSize.height)
-            default:
-                break
-            }
+            // Move graphics context left
+            CGContextTranslateCTM(context, -imageSize.height, 0)
+
+        case .PortraitUpsideDown:
+            // Rotate graphics context 180 degrees
+            CGContextRotateCTM(context, pi)
+
+            // Move graphics context left and up
+            CGContextTranslateCTM(context, -imageSize.width, -imageSize.height)
+
+        default:
+            break
+        }
     }
 
 }
