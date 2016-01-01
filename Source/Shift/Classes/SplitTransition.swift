@@ -412,12 +412,8 @@ private extension SplitTransition {
                 fromVC = originVC
                 toVC = destinationVC
             default:
-                if fromVC == nil {
-                    fromVC = fromViewController(transitionContext) ?? UIViewController()
-                }
-                if toVC == nil {
-                    toVC = toViewController(transitionContext) ?? UIViewController()
-                }
+                fromVC = fromViewController(transitionContext) ?? UIViewController()
+                toVC = toViewController(transitionContext) ?? UIViewController()
         }
 
         toVC?.navigationController?.navigationBarHidden = true
@@ -496,9 +492,9 @@ private extension SplitTransition {
         completion: (() -> ())?) {
 
             /// Add subviews
-            if toViewController.view.superview == nil {
-                // If view controller is modally presented, it will
-                // already be in the view hierarchy
+            if transitionType == .Pop {
+                // If view controller is modally presented (transitionType == .Dismiss), 
+                // it will already be in the view hierarchy
                 containerView.addSubview(toViewController.view)
             }
             containerView.addSubview(topSplitImageView)

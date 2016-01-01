@@ -63,6 +63,7 @@ final class SplitTransitionAnimatedPresentDismissViewControllerViewController: U
 
         // Configure transition
         currentTransition = SplitTransition()
+        currentTransition?.transitionDuration = 2.0
         currentTransition?.screenshotScope = .Window
         currentTransition?.splitLocation = CGRectGetMidY((currentCell!.frame)) + navigationController!.navigationBar.frame.size.height
         currentTransition?.transitionType = .Presentation(self, destinationViewController)
