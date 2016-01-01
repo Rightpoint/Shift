@@ -28,25 +28,7 @@
 
 import UIKit
 
-
-extension TransitionType: Equatable {}
-
-public func == (lhs: TransitionType, rhs: TransitionType) -> Bool {
-    switch(lhs, rhs) {
-        case (.Push, .Push):
-            return true
-        case (.Pop, .Pop):
-            return true
-        case (.Interactive, .Interactive):
-            return true
-        case (let .Dismissal(vc1, vc2), let .Dismissal(vc3, vc4)):
-            return vc1 == vc3 && vc2 == vc4
-        case (let .Presentation(vc1, vc2), let .Presentation(vc3, vc4)):
-            return vc1 == vc3 && vc2 == vc4
-        default:
-            return false
-    }
-}
+final public class SplitTransition: UIPercentDrivenInteractiveTransition {
 
     /**
      The type of transition.
@@ -64,8 +46,6 @@ public func == (lhs: TransitionType, rhs: TransitionType) -> Bool {
         case Dismissal(UIViewController, UIViewController)
     }
 
-
-final public class SplitTransition: UIPercentDrivenInteractiveTransition {
 
     /**
      Scope of screenshot used to generate top and bottom split views
@@ -261,15 +241,15 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
 
         switch transitionType {
             case .Push:
-                push(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
+                pushOrPresent(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
             case .Pop:
-                pop(toVC, fromViewController: fromVC, containerView: container, completion: completion)
+                popOrDismiss(toVC, fromViewController: fromVC, containerView: container, completion: completion)
             case .Interactive:
-                push(splitOffset, toViewController: toVC, fromViewController: fromVC, containerView: container, completion: nil)
+                pushOrPresent(splitOffset, toViewController: toVC, fromViewController: fromVC, containerView: container, completion: nil)
             case .Presentation:
-                present(toVC, fromViewController: fromVC, containerView: container, completion: completion)
+                pushOrPresent(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
             case .Dismissal:
-                dismiss(toVC, fromViewController: fromVC, containerView: container, completion: completion)
+                popOrDismiss(toVC, fromViewController: fromVC, containerView: container, completion: completion)
                 break
             }
     }
@@ -460,7 +440,7 @@ private extension SplitTransition {
     }
 
     /**
-    Push fromViewController onto navigation stack.
+    Push fromViewController onto navigation stack or present it modally.
 
     - parameter toOffset:           vertical offset at which to start interactive animation.
     - parameter toViewController:   destination view controller.
@@ -468,12 +448,13 @@ private extension SplitTransition {
     - parameter containerView:      container view for transition context.
     - parameter completion:         completion handler.
     */
-    func push(toOffset: CGFloat = 0.0,
+    func pushOrPresent(toOffset: CGFloat = 0.0,
         toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
         completion: (() -> ())?) {
             /// Add subviews
+            containerView.clipsToBounds = true
             containerView.addSubview(toViewController.view)
             containerView.addSubview(topSplitImageView)
             containerView.addSubview(bottomSplitImageView)
@@ -502,21 +483,24 @@ private extension SplitTransition {
     }
 
     /**
-     Pop fromViewController from navigation stack.
+     Pop fromViewController from navigation stack or (if modally presented) dismiss it.
 
      - parameter toViewController:   destination view controller.
      - parameter fromViewController: origin view controller.
      - parameter containerView:      container view for transition context.
      - parameter completion:         completion handler.
      */
-    func pop(toViewController: UIViewController,
+    func popOrDismiss(toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
         completion: (() -> ())?) {
 
             /// Add subviews
-            containerView.insertSubview(toViewController.view, belowSubview: fromViewController.view)
-            containerView.addSubview(toViewController.view)
+            if toViewController.view.superview == nil {
+                // If view controller is modally presented, it will
+                // already be in the view hierarchy
+                containerView.addSubview(toViewController.view)
+            }
             containerView.addSubview(topSplitImageView)
             containerView.addSubview(bottomSplitImageView)
 
@@ -602,46 +586,6 @@ private extension SplitTransition {
             }
     }
 
-    func dismiss(toViewController: UIViewController,
-        fromViewController: UIViewController,
-        containerView: UIView,
-        completion: (() -> ())?) -> Void {
-            /// Add subviews
-            containerView.addSubview(topSplitImageView)
-            containerView.addSubview(bottomSplitImageView)
-
-            /// Destination view controller is initially hidden
-            toViewController.view.alpha = 0.0
-
-            /// Set initial transforms for top and bottom split views
-            topSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, -topSplitImageView.bounds.size.height)
-            bottomSplitImageView.transform = CGAffineTransformMakeTranslation(0.0, bottomSplitImageView.bounds.size.height)
-
-            UIView.animateWithDuration(transitionDuration, delay: 0.0, usingSpringWithDamping: 0.65, initialSpringVelocity: 1.0, options: .LayoutSubviews, animations: { [weak self] () -> Void in
-                if let controller = self {
-                    /// Restore the top and bottom screen captures to their original positions
-                    controller.topSplitImageView.transform = CGAffineTransformIdentity
-                    controller.bottomSplitImageView.transform = CGAffineTransformIdentity
-
-                    /// Restore fromVC's view to its original position
-                    fromViewController.view.transform = CGAffineTransformMakeTranslation(0.0, controller.topSplitImageView.bounds.size.height)
-                }
-                }) { [weak self] (Bool) -> Void in
-                    /// When the transition is finished, top and bottom split views are removed from the view hierarchy
-                    if let controller = self {
-                        controller.topSplitImageView.removeFromSuperview()
-                        controller.bottomSplitImageView.removeFromSuperview()
-                    }
-
-                    /// Make destination view controller's view visible again
-                    toViewController.view.alpha = 1.0
-                    toViewController.navigationController?.setNavigationBarHidden(false, animated: false)
-
-                    /// If a completion was passed as a parameter, execute it
-                    completion?()
-            }
-    }
-
     func setInitialScreenCaptureFrames(containerView: UIView) {
 
         /// Set bounds for top and bottom screen captures
@@ -711,4 +655,34 @@ extension SplitTransition: UIViewControllerTransitioningDelegate {
         return transitionType != .Interactive ? self : nil
     }
 
+}
+
+
+// MARK: - Equatable
+
+extension  SplitTransition.TransitionType: Equatable {}
+
+/**
+ Implementation of Equatable Protocol
+
+ - parameter lhs: a transition type.
+ - parameter rhs: a transition type.
+
+ - returns: true if the 2 transition types are equal, false if not.
+ */
+public func == (lhs: SplitTransition.TransitionType, rhs: SplitTransition.TransitionType) -> Bool {
+    switch(lhs, rhs) {
+        case (.Push, .Push):
+            return true
+        case (.Pop, .Pop):
+            return true
+        case (.Interactive, .Interactive):
+            return true
+        case (let .Dismissal(vc1, vc2), let .Dismissal(vc3, vc4)):
+            return vc1 == vc3 && vc2 == vc4
+        case (let .Presentation(vc1, vc2), let .Presentation(vc3, vc4)):
+            return vc1 == vc3 && vc2 == vc4
+        default:
+            return false
+    }
 }
