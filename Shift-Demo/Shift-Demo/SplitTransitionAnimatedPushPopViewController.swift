@@ -1,5 +1,5 @@
 //
-//  SplitTransitionAnimatedViewController.swift
+//  SplitTransitionAnimatedPushPopViewController.swift
 //  Shift-Demo
 //
 //  Created by Matthew Buckley on 12/19/15.
@@ -9,7 +9,7 @@
 import UIKit
 import Shift
 
-final class SplitTransitionAnimatedViewController: UITableViewController {
+final class SplitTransitionAnimatedPushPopViewController: UITableViewController {
 
     var initialNavigationControllerDelegate: UINavigationControllerDelegate?
     var currentTransition: SplitTransition?
@@ -67,7 +67,7 @@ final class SplitTransitionAnimatedViewController: UITableViewController {
 
 }
 
-extension SplitTransitionAnimatedViewController: UINavigationControllerDelegate {
+extension SplitTransitionAnimatedPushPopViewController: UINavigationControllerDelegate {
 
     func navigationController(navigationController: UINavigationController,
         animationControllerForOperation operation: UINavigationControllerOperation,
@@ -85,9 +85,8 @@ extension SplitTransitionAnimatedViewController: UINavigationControllerDelegate 
             else if (operation == .Pop && toVC == self) {
                 currentTransition?.transitionType = .Pop
             }
-            
+
             return currentTransition
     }
     
 }
-

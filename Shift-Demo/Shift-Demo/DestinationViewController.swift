@@ -18,7 +18,8 @@ final class DestinationViewController: UIViewController {
     }
 
     func didTap(sender: UITapGestureRecognizer) {
-        navigationController?.popViewControllerAnimated(true)
+//        navigationController?.popViewControllerAnimated(true)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
 }
