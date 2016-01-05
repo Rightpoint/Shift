@@ -134,3 +134,27 @@ presentViewController(destinationViewController, animated: true) { [weak self] (
 }
 ```
 
+### ZoomPushTransition
+
+<p align="center" >
+<br/>
+<img src="ZoomPushTransition.gif" alt="Overview" />
+<br/>
+</p>
+
+`ZoomPushTransition` exposes 2 key properties: 
+
+1. `transitionTime` - duration (in seconds) of the transition
+2. `scaleChangePct` - a transform which scales the destination view controller's view by `(sx, sy)' at the start of the transition
+
+Set these properties in your view controller's implementation of	`UINavigationControllerDelegate`:
+
+
+```swift
+    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        let zoomPushTransition = ZoomPushTransition()
+        zoomPushTransition.transitionTime = 0.35
+        zoomPushTransition.scaleChangePct = 0.33
+        return zoomPushTransition
+    }
+```
