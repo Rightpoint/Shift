@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5AC2EAA1C371545009AAC94 /* SplitTransitionAnimatedPresentDismissViewControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AC2EA91C371545009AAC94 /* SplitTransitionAnimatedPresentDismissViewControllerViewController.swift */; };
 		3CBDB04B1C34747D009E68D8 /* ZoomPushTransitionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CBDB04A1C34747D009E68D8 /* ZoomPushTransitionViewController.swift */; };
 		B5B614D71C263FDF002961BC /* SplitTransitionInteractiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B614D61C263FDF002961BC /* SplitTransitionInteractiveViewController.swift */; };
-		B5B614D91C263FF9002961BC /* SplitTransitionAnimatedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B614D81C263FF9002961BC /* SplitTransitionAnimatedViewController.swift */; };
+		B5B614D91C263FF9002961BC /* SplitTransitionAnimatedPushPopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B614D81C263FF9002961BC /* SplitTransitionAnimatedPushPopViewController.swift */; };
 		B5E041451C21C7A2003B4203 /* Shift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5F88B961C19E6F500D10000 /* Shift.framework */; };
 		B5E041461C21C7A2003B4203 /* Shift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B5F88B961C19E6F500D10000 /* Shift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B5F88B751C19E06600D10000 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F88B741C19E06600D10000 /* AppDelegate.swift */; };
@@ -58,9 +59,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B5AC2EA91C371545009AAC94 /* SplitTransitionAnimatedPresentDismissViewControllerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitTransitionAnimatedPresentDismissViewControllerViewController.swift; sourceTree = "<group>"; };
 		3CBDB04A1C34747D009E68D8 /* ZoomPushTransitionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomPushTransitionViewController.swift; sourceTree = "<group>"; };
 		B5B614D61C263FDF002961BC /* SplitTransitionInteractiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitTransitionInteractiveViewController.swift; sourceTree = "<group>"; };
-		B5B614D81C263FF9002961BC /* SplitTransitionAnimatedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitTransitionAnimatedViewController.swift; sourceTree = "<group>"; };
+		B5B614D81C263FF9002961BC /* SplitTransitionAnimatedPushPopViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitTransitionAnimatedPushPopViewController.swift; sourceTree = "<group>"; };
 		B5F88B711C19E06600D10000 /* Shift-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shift-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F88B741C19E06600D10000 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B5F88B761C19E06600D10000 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -107,7 +109,8 @@
 				B5F88B761C19E06600D10000 /* ViewController.swift */,
 				B5F88B991C19F07F00D10000 /* DestinationViewController.swift */,
 				B5B614D61C263FDF002961BC /* SplitTransitionInteractiveViewController.swift */,
-				B5B614D81C263FF9002961BC /* SplitTransitionAnimatedViewController.swift */,
+				B5B614D81C263FF9002961BC /* SplitTransitionAnimatedPushPopViewController.swift */,
+				B5AC2EA91C371545009AAC94 /* SplitTransitionAnimatedPresentDismissViewControllerViewController.swift */,
 				3CBDB04A1C34747D009E68D8 /* ZoomPushTransitionViewController.swift */,
 				B5F88B7B1C19E06600D10000 /* Assets.xcassets */,
 				B5F88B7D1C19E06600D10000 /* LaunchScreen.storyboard */,
@@ -214,10 +217,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5F88B771C19E06600D10000 /* ViewController.swift in Sources */,
+				B5AC2EAA1C371545009AAC94 /* SplitTransitionAnimatedPresentDismissViewControllerViewController.swift in Sources */,
 				B5B614D71C263FDF002961BC /* SplitTransitionInteractiveViewController.swift in Sources */,
 				3CBDB04B1C34747D009E68D8 /* ZoomPushTransitionViewController.swift in Sources */,
 				B5F88B9A1C19F07F00D10000 /* DestinationViewController.swift in Sources */,
-				B5B614D91C263FF9002961BC /* SplitTransitionAnimatedViewController.swift in Sources */,
+				B5B614D91C263FF9002961BC /* SplitTransitionAnimatedPushPopViewController.swift in Sources */,
 				B5F88B751C19E06600D10000 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,5 +1,5 @@
 //
-//  SplitTransitionAnimatedViewController.swift
+//  SplitTransitionAnimatedPushPopViewController.swift
 //  Shift-Demo
 //
 //  Created by Matthew Buckley on 12/19/15.
@@ -9,7 +9,7 @@
 import UIKit
 import Shift
 
-final class SplitTransitionAnimatedViewController: UITableViewController {
+final class SplitTransitionAnimatedPushPopViewController: UITableViewController {
 
     var initialNavigationControllerDelegate: UINavigationControllerDelegate?
     var currentTransition: SplitTransition?
@@ -60,14 +60,16 @@ final class SplitTransitionAnimatedViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         navigationController?.delegate = self
         currentCell = tableView.cellForRowAtIndexPath(indexPath)
-        let destinationViewController = DestinationViewController()
+        let destinationViewController = DestinationViewController(withDismissalHandler: { [weak self] in
+            self?.navigationController?.popViewControllerAnimated(true)
+        })
         destinationViewController.view.backgroundColor = colors[indexPath.row]
         navigationController?.pushViewController(destinationViewController, animated: true)
     }
 
 }
 
-extension SplitTransitionAnimatedViewController: UINavigationControllerDelegate {
+extension SplitTransitionAnimatedPushPopViewController: UINavigationControllerDelegate {
 
     func navigationController(navigationController: UINavigationController,
         animationControllerForOperation operation: UINavigationControllerOperation,
@@ -85,9 +87,8 @@ extension SplitTransitionAnimatedViewController: UINavigationControllerDelegate 
             else if (operation == .Pop && toVC == self) {
                 currentTransition?.transitionType = .Pop
             }
-            
+
             return currentTransition
     }
     
 }
-

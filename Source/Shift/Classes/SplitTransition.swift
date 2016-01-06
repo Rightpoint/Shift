@@ -36,12 +36,16 @@ final public class SplitTransition: UIPercentDrivenInteractiveTransition {
      - Push: A push transition.
      - Pop:  A pop transition.
      - Interactive:  An interactive transition.
+     - Presentation: a modal transition.
     */
     public enum TransitionType {
         case Push
         case Pop
         case Interactive
+        case Presentation(UIViewController, UIViewController)
+        case Dismissal(UIViewController, UIViewController)
     }
+
 
     /**
      Scope of screenshot used to generate top and bottom split views
@@ -202,7 +206,7 @@ final public class SplitTransition: UIPercentDrivenInteractiveTransition {
                 previousTouchLocation = nil
             default:
                 break
-            }
+        }
     }
 
     public override func startInteractiveTransition(transitionContext: UIViewControllerContextTransitioning) {
@@ -237,13 +241,15 @@ extension SplitTransition: UIViewControllerAnimatedTransitioning {
 
         switch transitionType {
             case .Push:
-                push(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
-                break
+                pushOrPresent(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
             case .Pop:
-                pop(toVC, fromViewController: fromVC, containerView: container, completion: completion)
-                break
+                popOrDismiss(toVC, fromViewController: fromVC, containerView: container, completion: completion)
             case .Interactive:
-                push(splitOffset, toViewController: toVC, fromViewController: fromVC, containerView: container, completion: nil)
+                pushOrPresent(splitOffset, toViewController: toVC, fromViewController: fromVC, containerView: container, completion: nil)
+            case .Presentation:
+                pushOrPresent(toViewController: toVC, fromViewController: fromVC, containerView: container, completion: completion)
+            case .Dismissal:
+                popOrDismiss(toVC, fromViewController: fromVC, containerView: container, completion: completion)
                 break
             }
     }
@@ -390,10 +396,26 @@ private extension SplitTransition {
         /// Grab the view in which the transition should take place.
         /// Coalesce to UIView()
         container = containerView(transitionContext) ?? UIView()
+        guard let container = container else {
+            debugPrint("Failed to set up container view")
+            return
+        }
+
+        container.frame = fromVC?.view.superview?.frame ?? container.frame
 
         /// Set source and destination view controllers
-        fromVC = fromViewController(transitionContext) ?? UIViewController()
-        toVC = toViewController(transitionContext) ?? UIViewController()
+        switch transitionType {
+            case .Presentation(let originVC, let destinationVC):
+                fromVC = originVC
+                toVC = destinationVC
+            case .Dismissal(let originVC, let destinationVC):
+                fromVC = originVC
+                toVC = destinationVC
+            default:
+                fromVC = fromViewController(transitionContext) ?? UIViewController()
+                toVC = toViewController(transitionContext) ?? UIViewController()
+        }
+
         toVC?.navigationController?.navigationBarHidden = true
 
         /// Take screenshot and store resulting UIImage
@@ -401,20 +423,20 @@ private extension SplitTransition {
 
         /// Set completion handler for transition
         completion = {
-            let complete: Bool = transitionContext?.transitionWasCancelled() ?? false
+            let cancelled: Bool = transitionContext?.transitionWasCancelled() ?? false
             /// Remove gesture recognizer from view
             if let gestureRecognizer = self.gestureRecognizer {
                 gestureRecognizer.view?.removeGestureRecognizer(gestureRecognizer)
             }
 
             /// Complete the transition
-            transitionContext?.completeTransition(!complete)
+            transitionContext?.completeTransition(!cancelled)
             transitionContext?.finishInteractiveTransition()
         }
     }
 
     /**
-    Push fromViewController onto navigation stack.
+    Push fromViewController onto navigation stack or present it modally.
 
     - parameter toOffset:           vertical offset at which to start interactive animation.
     - parameter toViewController:   destination view controller.
@@ -422,12 +444,13 @@ private extension SplitTransition {
     - parameter containerView:      container view for transition context.
     - parameter completion:         completion handler.
     */
-    func push(toOffset: CGFloat = 0.0,
+    func pushOrPresent(toOffset: CGFloat = 0.0,
         toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
         completion: (() -> ())?) {
             /// Add subviews
+            containerView.clipsToBounds = true
             containerView.addSubview(toViewController.view)
             containerView.addSubview(topSplitImageView)
             containerView.addSubview(bottomSplitImageView)
@@ -456,21 +479,24 @@ private extension SplitTransition {
     }
 
     /**
-     Pop fromViewController from navigation stack.
+     Pop fromViewController from navigation stack or (if modally presented) dismiss it.
 
      - parameter toViewController:   destination view controller.
      - parameter fromViewController: origin view controller.
      - parameter containerView:      container view for transition context.
      - parameter completion:         completion handler.
      */
-    func pop(toViewController: UIViewController,
+    func popOrDismiss(toViewController: UIViewController,
         fromViewController: UIViewController,
         containerView: UIView,
         completion: (() -> ())?) {
 
             /// Add subviews
-            containerView.insertSubview(toViewController.view, belowSubview: fromViewController.view)
-            containerView.addSubview(toViewController.view)
+            if transitionType == .Pop {
+                // If view controller is modally presented (transitionType == .Dismiss), 
+                // it will already be in the view hierarchy
+                containerView.addSubview(toViewController.view)
+            }
             containerView.addSubview(topSplitImageView)
             containerView.addSubview(bottomSplitImageView)
 
@@ -568,4 +594,42 @@ extension SplitTransition: UIViewControllerTransitioningDelegate {
         return transitionType == .Interactive ? self : nil
     }
 
+    public func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return transitionType != .Interactive ? self : nil
+    }
+
+    public func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return transitionType != .Interactive ? self : nil
+    }
+
+}
+
+
+// MARK: - Equatable
+
+extension  SplitTransition.TransitionType: Equatable {}
+
+/**
+ Implementation of Equatable Protocol
+
+ - parameter lhs: a transition type.
+ - parameter rhs: a transition type.
+
+ - returns: true if the 2 transition types are equal, false if not.
+ */
+public func == (lhs: SplitTransition.TransitionType, rhs: SplitTransition.TransitionType) -> Bool {
+    switch(lhs, rhs) {
+        case (.Push, .Push):
+            return true
+        case (.Pop, .Pop):
+            return true
+        case (.Interactive, .Interactive):
+            return true
+        case (let .Dismissal(vc1, vc2), let .Dismissal(vc3, vc4)):
+            return vc1 == vc3 && vc2 == vc4
+        case (let .Presentation(vc1, vc2), let .Presentation(vc3, vc4)):
+            return vc1 == vc3 && vc2 == vc4
+        default:
+            return false
+    }
 }

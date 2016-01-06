@@ -10,6 +10,13 @@ import UIKit
 
 final class DestinationViewController: UIViewController {
 
+    var dismissalHandler: (() -> ())?
+    
+    convenience init(withDismissalHandler dismissalHandler: () -> ()) {
+        self.init()
+        self.dismissalHandler = dismissalHandler
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -18,7 +25,7 @@ final class DestinationViewController: UIViewController {
     }
 
     func didTap(sender: UITapGestureRecognizer) {
-        navigationController?.popViewControllerAnimated(true)
+        dismissalHandler?()
     }
     
 }

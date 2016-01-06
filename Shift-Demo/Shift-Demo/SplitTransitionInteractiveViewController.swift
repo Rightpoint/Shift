@@ -60,7 +60,9 @@ final class SplitTransitionInteractiveViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         navigationController?.delegate = self
         currentSplitLocation = CGRectGetMidY(tableView.rectForRowAtIndexPath(indexPath)) - tableView.contentOffset.y
-        let destinationViewController = DestinationViewController()
+        let destinationViewController = DestinationViewController(withDismissalHandler: { [weak self] in
+            self?.navigationController?.popViewControllerAnimated(true)
+        })
         destinationViewController.view.backgroundColor = colors[indexPath.row]
         navigationController?.pushViewController(destinationViewController, animated: true)
     }
