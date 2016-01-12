@@ -20,7 +20,13 @@ To integrate Shift into your Xcode project using Carthage, specify it in your Ca
 
 ## Installation with CocoaPods
 
-... Coming soon.
+CocoaPods is a dependency manager for Swift and Objective-C Cocoa projects.
+
+To integrate Shift into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+pod 'Shift'
+```
 
 ## Usage
 
