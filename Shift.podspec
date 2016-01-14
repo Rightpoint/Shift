@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.screenshots         = "https://raw.githubusercontent.com/Raizlabs/Shift/master/SplitTransition.gif"
   s.license             = { :type => "MIT", :file => "LICENSE" }
 
-  s.author              = { "Matt Buckley" => "matt.buckley@raizlabs.com" }
+  s.authors             = { "Matt Buckley" => "matt.buckley@raizlabs.com", "John Watson" => "john.watson@raizlabs.com" }
   s.social_media_url    = "http://twitter.com/Raizlabs"
 
   s.platform            = :ios, "9.0"

@@ -1,7 +1,8 @@
 # Shift
-A library of custom iOS View Controller Animations and Interactions written in Swift.
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![CocoaPods compatible](https://img.shields.io/cocoapods/v/Shift.svg)](https://github.com/CocoaPods/CocoaPods)
 
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/raizlabs/shift)
+A library of custom iOS View Controller Animations and Interactions written in Swift.
 
 ## Installation with Carthage
 
@@ -43,7 +44,7 @@ navigationController?.delegate = self
 
 ```swift
 var currentTransition: UIViewControllerAnimatedTransitioning?
-``` 
+```
 
 - Extend your view controller to implement `UINavigationControllerDelegateTransitioning`. In your implementation, make sure to set the `currentTransition`:
 
@@ -56,9 +57,9 @@ extension ViewController: UINavigationControllerDelegate {
         toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 
         if (operation == .Push && fromVC == self) {
-			/*
-			* set currentTransition here
-        	*/
+            /*
+             * set currentTransition here
+             */
         }
         else if (operation == .Pop && toVC == self) {
         }
@@ -77,7 +78,7 @@ extension ViewController: UINavigationControllerDelegate {
 <br/>
 </p>
 
-`SplitTransition` exposes 5 key properties: 
+`SplitTransition` exposes 5 key properties:
 
 1. `screenshotScope` - (optional, defaults to `.View`) - determines whether top and bottom views are sourced from container view or entire window
 2. `splitLocation` (optional, defaults to `0.0`) - y coordinate where the top and bottom views part
@@ -134,7 +135,7 @@ presentViewController(destinationViewController, animated: true) { [weak self] (
         debugPrint("SplitTransitionAnimatedPresentDismissViewControllerViewController has been deallocated")
         return
     }
-    
+
     // After presentation has finished, update transitionType on currentTransition
     vc.currentTransition?.transitionType = .Dismissal(presentedVC, vc)
 }
@@ -148,7 +149,7 @@ presentViewController(destinationViewController, animated: true) { [weak self] (
 <br/>
 </p>
 
-`ZoomPushTransition` exposes 2 key properties: 
+`ZoomPushTransition` exposes 2 key properties:
 
 1. `transitionTime` - duration (in seconds) of the transition
 2. `scaleChangePct` - a transform which scales the destination view controller's view by `(sx, sy)' at the start of the transition
